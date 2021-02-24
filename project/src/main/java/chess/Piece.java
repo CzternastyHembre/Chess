@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ public abstract class Piece implements IntPiece{
 	protected char type;
 	protected Piece[][] board;
 	protected List<Pair<String, String>> path = new ArrayList<Pair<String, String>>();
+	protected String filePath = "file:C:\\Users\\matti\\git\\tdt4100-prosjekt-mattisch\\project\\src\\main\\resources\\images\\";
 
 //	private List<Piece> whitePieces = new ArrayList<>();
 //	private List<Piece> blackPieces = new ArrayList<>();
@@ -25,6 +26,10 @@ public abstract class Piece implements IntPiece{
 		this.color = color;
 		this.board = board;
 		this.type = type;
+	}
+	
+	public String getFilePath() {
+		return filePath;
 	}
 	
 	public String getPos() {

@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.List;
 
@@ -8,6 +8,12 @@ public class Knight extends Piece {
 	
 	public Knight(int x, int y, int color, Piece[][] board) {
 		super(x, y, color, board, 'N');
+		if (color == 0) {
+			this.filePath += "knight-white.png";
+		} else {
+			this.filePath += "knight-black.png";			
+		}
+
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.List;
 
@@ -8,6 +8,11 @@ public class Bishop extends Piece{
 
 	public Bishop(int x, int y, int color, Piece[][] board) {
 		super(x, y, color, board, 'B');
+		if (color == 0) {
+			this.filePath += "bishop-white.png";
+		} else {
+			this.filePath += "bishop-black.png";			
+		}
 	}
 
 	@Override

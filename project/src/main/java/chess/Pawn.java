@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.List;
 
@@ -8,6 +8,12 @@ public class Pawn extends Piece{
 	
 	public Pawn(int x, int y, int color, Piece[][] board) {
 		super(x, y, color, board, 'P');
+		if (color == 0) {
+			this.filePath += "pawn-white.png";
+		} else {
+			this.filePath += "pawn-black.png";			
+		}
+
 	}
 
 	@Override

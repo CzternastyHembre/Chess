@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.List;
 
@@ -8,6 +8,11 @@ public class Rook extends Piece {
 
 	public Rook(int x, int y, int color, Piece[][] board) {
 		super(x, y, color, board, 'R');
+		if (color == 0) {
+			this.filePath += "rook-white.png";
+		} else {
+			this.filePath += "rook-black.png";			
+		}
 	}
 
 	@Override

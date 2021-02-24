@@ -1,9 +1,9 @@
-package prosjekt;
+package chess;
 
 
 public class Game2 {
 	public static void main(String[] args) {
-		Board b = new Board(8);
+		Game b = new Game(8);
 		b.init8();
 		System.out.println(b);
 		b.checkMate();

@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.List;
 

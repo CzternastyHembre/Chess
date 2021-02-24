@@ -1,4 +1,4 @@
-package prosjekt;
+package chess;
 
 import java.util.List;
 
@@ -8,6 +8,12 @@ public class Queen extends Piece{
 
 	public Queen(int x, int y, int color, Piece[][] board) {
 		super(x, y, color, board, 'Q');
+		if (color == 0) {
+			this.filePath += "queen-white.png";
+		} else {
+			this.filePath += "queen-black.png";			
+		}
+
 	}
 
 	@Override
