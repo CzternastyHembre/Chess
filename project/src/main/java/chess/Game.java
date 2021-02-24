@@ -328,13 +328,21 @@ public class Game {
 		this.board[startY][startX].moveTo(endX, endY);
 		this.nextTurn();
 		moves.add(move);
+		
+		//TODO: mekk queening, må fikse undolastmove!!
+//		if (this.board[endY][endX].getType() == 'P' && (endY == 0 || endY == this.board.length - 1)) {
+//			this.board[endY][endX] = new Queen(endX, endY, 0, this.board);
+//		}
 	}
 	
 	public void movePiece(Pair<String, String> move) {
 		this.moveFromPair(move);
 		if (this.checkMate()) {
-			System.out.println(this);
-			System.out.println("Checkmate; " + (1-turn) + " Won");
+			if (checkInChess(turn)) {
+				System.out.println("Checkmate; " + (1-turn) + " Won");				
+			} else {
+				System.out.println("Stalemate LOL");
+			}
 		} else {
 			if (this.checkInChess(1- turn)) {
 				this.undoLastMove();

@@ -33,7 +33,7 @@ public class Pawn extends Piece{
 				super.path.add(p);
 				
 				if (this.y + ydir*2 >= 0 && this.y + ydir*2 < this.board.length) {//Check y + 2*ydir inside board
-					if (this.board[this.y + 2*ydir][this.x] == null && Math.abs(this.y - 3.5) == 2.5) {//Two up
+					if (this.board[this.y + 2*ydir][this.x] == null && (this.y == 1 || this.y == this.board.length - 2)) {//Two up
 						Pair<String, String> p2 = new Pair<>("" + this.x + this.y,"" + this.x + (this.y + 2*ydir));					
 						super.path.add(p2);
 					}
