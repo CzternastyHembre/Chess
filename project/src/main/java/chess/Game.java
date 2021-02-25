@@ -1,5 +1,15 @@
 package chess;
 
+import java.io.File; 
+import java.util.Scanner; 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +24,11 @@ public class Game {
 	private List<Pair<String, String>> moves = new ArrayList<>();
 	private List<Piece> takenPieces = new ArrayList<>();
 	private List<Pair<String, String>> posibleMoves = new ArrayList<>();
-
+	private boolean isGameOver = false;
+	
+	public boolean isGameOver() {
+		return this.isGameOver;
+	}
 
 	public Game(int size) {
 		this.board = new Piece[size][size];
@@ -231,6 +245,7 @@ public class Game {
 	public void moveFromStringLAN(String LAN) {
 		this.movePiece(this.convertLANtoPair(LAN));
 	}
+	
 	public List<Pair<String, String>> getPosPathsLAN(String ss) {
 		String letters = "abcdefgh";
 		String startLetter = ("" + ss.charAt(0)).toLowerCase();
@@ -246,6 +261,7 @@ public class Game {
 		ss = "" + startX + startY;
 		return this.getPosPaths(ss);
 	}
+	
 	public List<Pair<String, String>> getPosPaths(String ss) {
 		List<Pair<String, String>> moves = new ArrayList<>();
 		this.checkMate();
@@ -314,6 +330,7 @@ public class Game {
 		return LAN;
 
 	}
+	
 	public void moveFromPair(Pair<String, String> move) {
 		//The base moving method
 		int startX = Integer.parseInt(move.getKey().charAt(0) + "");
@@ -338,11 +355,12 @@ public class Game {
 	public void movePiece(Pair<String, String> move) {
 		this.moveFromPair(move);
 		if (this.checkMate()) {
-			if (checkInChess(turn)) {
-				System.out.println("Checkmate; " + (1-turn) + " Won");				
-			} else {
-				System.out.println("Stalemate LOL");
-			}
+			this.isGameOver = true;
+//			if (checkInChess(turn)) {
+//				System.out.println("Checkmate; " + (1-turn) + " Won");				
+//			} else {
+//				System.out.println("Stalemate LOL");
+//			}
 		} else {
 			if (this.checkInChess(1- turn)) {
 				this.undoLastMove();
@@ -383,13 +401,91 @@ public class Game {
 		return boardString;
 	}
 	
+	public void saveToFileString(String s) {
+	    try {
+	        FileWriter fileWriter = new FileWriter("src/main/resources/storage/playedGames.txt", true); //Set true for append mode
+	        PrintWriter printWriter = new PrintWriter(fileWriter);
+	        printWriter.println(s);  //New line
+	        printWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String[]> getGames() {
+		List<String[]> games = new ArrayList<>();
+		try {
+			File file = new File("src/main/resources/storage/playedGames.txt");
+		    Scanner sc = new Scanner(file);
+		    while (sc.hasNextLine()) {
+		    	String[] game = sc.nextLine().split(";");
+		    	games.add(game);
+		    } 
+		    return games;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public String convertMovesToString(List<Pair<String, String>> moves) {
+		String stringMoves = "";
+		for (Pair<String, String> move : moves) {
+			stringMoves += this.convertPairToLAN(move) + " ";
+		}
+		return stringMoves.substring(0, stringMoves.length() - 1); // Removing the last ch;
+	}
+	
+	public void saveGame(String name) {
+		List<String[]> games = this.getGames();
+		for (String[] game : games) {
+			if (game[0].equals(name)) {
+				throw new IllegalStateException("Can not save game whit same game name");
+			}
+		}
+		String stringMove = this.convertMovesToString(this.getMoves());
+		this.saveToFileString(name + ";" + stringMove);
+	}
 
+	public String getGame(String name) {
+		List<String[]> games = this.getGames();
+		for (String[] game : games) {
+			if (game[0].equals(name)) {
+				return game[1];
+			}
+		}
+		throw new IllegalArgumentException("No game with this name");
+	}
+	
+	public void loadGame(String name) {
+		String gameString = this.getGame(name);
+		int gameSize = this.getSize();
+		this.resetGame8();
+		this.movesFromStringLongLAN(gameString);
+	}
+	
+	public void resetGame8() {
+		//reseting all states, idk how to create a new game
+		this.board = new Piece[this.getSize()][this.getSize()];
+		this.path = new ArrayList<Pair<String, String>>();
+		this.turn = 0;
+		this.moves = new ArrayList<>();
+		this.takenPieces = new ArrayList<>();
+		this.posibleMoves = new ArrayList<>();
+		this.isGameOver = false;
+		this.init8();
+	}
+	
 	public static void main(String[] args) {
 		Game b = new Game(8);
 		b.init8();
-		System.out.println(b);
-		b.getPiece(0, 6).moveTo(0, 4);
-		System.out.println(b);
+		System.out.println(b);	
+		b.loadGame("TESTgame");
+		System.out.println(b);	
+		b.resetGame8();
+		System.out.println(b);	
+
+		
 		
 //		System.out.println(b.getBoard()[7][1].getPath());
 //		System.out.println(b.getBoard()[1][1].getPath());
@@ -515,6 +611,14 @@ public class Game {
 		
 //		String veryLongGame = "d2d4 g8f6 c2c4 e7e6 g1f3 b7b6 a2a3 c8b7 b1c3 d7d5 c4d5 f6d5 d1c2 d5c3 b2c3 c7c5 e2e4 b8d7 c1f4 c5d4 c3d4 a8c8 c2b3 f8e7 f1d3 d7f6 b3b5 d8d7 f3e5 d7b5 d3b5 e8f8 f2f3 f6e8";
 //		b.movesFromStringLongLAN(veryLongGame);
+//		System.out.println(b);
+//		b.saveGame("OiL");
+//		System.out.println(b.getGames().size());
+//		List<Pair<String, String>> stringm = b.getMoves();
+//		System.out.println(b.convertMovesToString(stringm));
+//		System.out.println(b.convertMovesToString(stringm).equals(veryLongGame));
+//		b.saveToFile("TESTgame;" + veryLongGame);
+		
 //		System.out.println(b.getLANArr());
 
 	}
