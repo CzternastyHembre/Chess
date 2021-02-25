@@ -439,7 +439,7 @@ public class Game {
 	public void saveGame(String name) {
 		List<String[]> games = this.getGames();
 		for (String[] game : games) {
-			if (game[0].equals(name)) {
+			if (game[0].equals(name) || name.equals("")) {
 				throw new IllegalStateException("Can not save game whit same game name");
 			}
 		}

@@ -4,7 +4,8 @@ package chess;
 
 import java.io.FileInputStream;
 
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -41,7 +42,13 @@ public class GameController {
 	
 	@FXML
 	Button buttonMove;
+	
+	@FXML
+	TextField saveText;
 
+	@FXML
+	ComboBox<String> dropDown;
+	
 	@FXML
 	private void initialize() {
 		game = new Game(8);
@@ -96,7 +103,7 @@ public class GameController {
 				}
 			}
 		}
-		for (Label label : labels) {
+		for (Label label : labels) {//Adding the labels last so i dont mess whit the indexses
 			board.getChildren().add(label);
 		}
 	}
@@ -118,6 +125,27 @@ public class GameController {
 	public void resetGame() {
 		game.resetGame8();
 		this.drawPieces();
+	}
+	
+	@FXML
+	public void loadGame() {
+		System.out.println(dropDown.getValue());
+		String name = dropDown.getValue();
+		if (name == null) {
+			throw new IllegalArgumentException("You need to choose a game");
+		}
+		game.loadGame(name);
+		drawPieces();
+	}
+	
+	@FXML
+	public void saveGame() {
+		try {
+			game.saveGame(saveText.getText());
+			drawPieces();
+		} catch (Exception e) {
+			this.feedBackLabel.setText("Game name already exsists");
+		}
 	}
 	
 	public void moveFromMovePair(Pair<String, String> move) {
@@ -168,6 +196,13 @@ public class GameController {
 				} 
 			}
 		}
+		ObservableList<String> names = FXCollections.observableArrayList();
+		List<String[]> games = game.getGames();
+		for (String[] game : games) {
+			names.add(game[0]);
+		}
+		dropDown.setItems(names);
+
 	}
 	
 	private void markTiles(List<Pair<String, String>> tiles) {
