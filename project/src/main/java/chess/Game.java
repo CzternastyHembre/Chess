@@ -19,7 +19,7 @@ import javafx.util.Pair;
 public class Game {
 	private Piece[][] board;
 	private int size;
-	private List<Pair<String, String>> path = new ArrayList<Pair<String, String>>();
+	private List<Pair<String, String>> paths = new ArrayList<Pair<String, String>>();
 	private int turn = 0;
 	private List<Pair<String, String>> moves = new ArrayList<>();
 	private List<Piece> takenPieces = new ArrayList<>();
@@ -132,7 +132,7 @@ public class Game {
 	public boolean isInsideBoard(int x, int y) {
 		int maxSize = Math.max(x, y);
 		int minSize = Math.min(x, y);
-		return maxSize > this.size && minSize >= 0;
+		return maxSize < this.size && minSize >= 0;
 	}
 	
 	public Piece getPiece(int x, int y) {
@@ -155,18 +155,18 @@ public class Game {
 	}
 
 	public List<Pair<String, String>> getAllPaths(int color) {
-		path.clear();
+		this.paths.clear();
 		for (int i = 0; i < this.getSize(); i++) {
 			for (int j = 0; j < this.getSize(); j++) {
 				
 				if (this.board[i][j] != null) {					
 					if (this.board[i][j].getColor() == color) {
-						path.addAll(this.board[i][j].getPath());
+						paths.addAll(this.board[i][j].getPath());
 					}
 				}
 			}
 		}
-		return path;
+		return paths;
 	}
 	
 	public Piece getKing(int color) {
@@ -224,7 +224,7 @@ public class Game {
 		Piece lastPiece = this.popLastPiece();
 
 		if (lastMove == null) {
-			throw new IllegalStateException("Not valid in this state");
+			throw new IllegalStateException("Can't undo in this state");
 		}
 		//Reversing the move
 		Pair<String, String> reversedMove = new Pair(lastMove.getValue(), lastMove.getKey());
@@ -282,7 +282,7 @@ public class Game {
 			throw new IllegalArgumentException("Move has to be 4 characters long");
 		}
 		
-		String letters = "abcdefgh";
+		String letters = "abcdefghijklmnopqrstuvwxyz";
 		String startLetter = ("" + LAN.charAt(0)).toLowerCase();
 		String endLetter = ("" + LAN.charAt(2)).toLowerCase();
 		char startNumber = LAN.charAt(1);
@@ -298,8 +298,11 @@ public class Game {
 		int endX = letters.indexOf("" + endLetter); 
 		int endY = this.size - Integer.parseInt("" + endNumber);
 		
-		if (this.isInsideBoard(startY, endY) || this.board[startY][startX] == null) {
-			throw new IllegalArgumentException("Not a valid move");			
+		if (!this.isInsideBoard(startX, startY) || !this.isInsideBoard(endX, endY)) {
+			throw new IllegalStateException("Move is not inside the board");
+		}
+		if (this.board[startY][startX] == null) {
+			throw new IllegalArgumentException("No piece at " + LAN.substring(0,2));							
 		}
 
 		Pair<String, String> pairMove = new Pair("" + startX + startY, "" + endX + endY);
@@ -354,6 +357,10 @@ public class Game {
 	
 	public void movePiece(Pair<String, String> move) {
 		this.moveFromPair(move);
+		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
+		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
+		this.board[endY][endX].setHasMoved(true);
+
 		if (this.checkMate()) {
 			this.isGameOver = true;
 //			if (checkInChess(turn)) {
@@ -364,7 +371,7 @@ public class Game {
 		} else {
 			if (this.checkInChess(1- turn)) {
 				this.undoLastMove();
-				throw new IllegalStateException("Du er i sjakk mann");
+				throw new IllegalStateException("You are in chess");
 			}
 		}
 
@@ -437,10 +444,20 @@ public class Game {
 	}
 	
 	public void saveGame(String name) {
+		if (name == null) {
+			throw new IllegalStateException("No name set to save");			
+		}
+		if (name.isBlank()) {
+			throw new IllegalStateException("No name set to save");						
+		}
+		if (this.getMoves().isEmpty()) {
+			throw new IllegalStateException("No pieces moved");						
+		}
+		
 		List<String[]> games = this.getGames();
 		for (String[] game : games) {
-			if (game[0].equals(name) || name.equals("")) {
-				throw new IllegalStateException("Can not save game whit same game name");
+			if (game[0].equals(name)) {
+				throw new IllegalStateException("Game name already taken");
 			}
 		}
 		String stringMove = this.convertMovesToString(this.getMoves());
@@ -448,6 +465,9 @@ public class Game {
 	}
 
 	public String getGame(String name) {
+		if (name == null) {
+			throw new IllegalStateException("No game set to load");			
+		}
 		List<String[]> games = this.getGames();
 		for (String[] game : games) {
 			if (game[0].equals(name)) {
@@ -457,6 +477,7 @@ public class Game {
 		throw new IllegalArgumentException("No game with this name");
 	}
 	
+	
 	public void loadGame(String name) {
 		String gameString = this.getGame(name);
 		int gameSize = this.getSize();
@@ -464,10 +485,18 @@ public class Game {
 		this.movesFromStringLongLAN(gameString);
 	}
 	
+	public void loadPuzzle(String name) {
+		String gameString = this.getPuzzle(name);
+		int gameSize = this.getSize();
+		this.resetGame8();
+		this.movesFromStringLongLAN(gameString);
+	}
+	
+	
 	public void resetGame8() {
 		//reseting all states, idk how to create a new game
 		this.board = new Piece[this.getSize()][this.getSize()];
-		this.path = new ArrayList<Pair<String, String>>();
+		this.paths = new ArrayList<Pair<String, String>>();
 		this.turn = 0;
 		this.moves = new ArrayList<>();
 		this.takenPieces = new ArrayList<>();
@@ -476,14 +505,46 @@ public class Game {
 		this.init8();
 	}
 	
+	public List<String[]> getPuzzles() {
+		List<String[]> games = new ArrayList<>();
+		try {
+			File file = new File("src/main/resources/storage/puzzles.txt");
+		    Scanner sc = new Scanner(file);
+		    while (sc.hasNextLine()) {
+		    	String[] game = sc.nextLine().split(";");
+		    	games.add(game);
+		    } 
+		    return games;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	//TODO
+	public String getPuzzle(String name) {
+		if (name == null) {
+			throw new IllegalStateException("No game set to load");			
+		}
+		List<String[]> puzzle = this.getPuzzles();
+		for (String[] game : puzzle) {
+			if (game[0].equals(name)) {
+				return game[1];
+			}
+		}
+		throw new IllegalArgumentException("No game with this name");
+	}
+
+
+	
 	public static void main(String[] args) {
 		Game b = new Game(8);
 		b.init8();
-		System.out.println(b);	
-		b.loadGame("TESTgame");
-		System.out.println(b);	
-		b.resetGame8();
-		System.out.println(b);	
+//		System.out.println(b);	
+//		b.loadGame("TESTgame");
+//		System.out.println(b);	
+//		b.resetGame8();
+//		System.out.println(b);	
 
 		
 		

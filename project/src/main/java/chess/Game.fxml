@@ -13,7 +13,7 @@
 
 <AnchorPane fx:id="anchorPane" prefHeight="600.0" prefWidth="504.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chess.GameController">
    <children>
-      <GridPane prefHeight="600.0" prefWidth="500.0">
+      <GridPane prefHeight="600.0" prefWidth="504.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -22,22 +22,30 @@
           <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Pane GridPane.rowIndex="1">
+            <Pane fx:id="controlPane" prefHeight="100.0" GridPane.rowIndex="1">
                <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Move:" />
+                  <Label fx:id="moveLabel" layoutX="54.0" layoutY="3.0" prefHeight="31.0" prefWidth="101.0">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="feedBackLabel" layoutX="155.0" layoutY="3.0" prefHeight="31.0" prefWidth="276.0">
+                     <font>
+                        <Font size="16.0" />
+                     </font></Label>
                   <TextField fx:id="textField" layoutX="14.0" layoutY="37.0" onAction="#onEnter" prefHeight="25.0" prefWidth="62.0" promptText="Move">
                      <font>
                         <Font size="16.0" />
                      </font></TextField>
-                  <Label layoutX="14.0" layoutY="14.0" text="Move:" />
-                  <Label fx:id="feedBackLabel" layoutX="151.0" layoutY="7.0" prefHeight="31.0" prefWidth="199.0">
-                     <font>
-                        <Font size="16.0" />
-                     </font></Label>
-                  <Button layoutX="441.0" layoutY="10.0" mnemonicParsing="false" onAction="#resetGame" text="Reset" />
-                  <Button layoutX="411.0" layoutY="74.0" mnemonicParsing="false" onAction="#saveGame" text="Save game" />
-                  <TextField fx:id="saveText" layoutX="331.0" layoutY="73.0" prefHeight="25.0" prefWidth="80.0" promptText="Game name" />
-                  <Button layoutX="410.0" layoutY="43.0" mnemonicParsing="false" onAction="#loadGame" text="Load game" />
-                  <ComboBox fx:id="dropDown" layoutX="331.0" layoutY="43.0" prefHeight="25.0" prefWidth="80.0" promptText="Games" />
+                  <Button layoutX="399.0" layoutY="18.0" mnemonicParsing="false" onAction="#undoMove" text="Undo" />
+                  <Button layoutX="445.0" layoutY="18.0" mnemonicParsing="false" onAction="#resetGame8" text="Reset" />
+                  <ComboBox fx:id="dropDown" layoutX="115.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Games" />
+                  <Button layoutX="195.0" layoutY="62.0" mnemonicParsing="false" onAction="#loadGame" text="Load game" />
+                  <TextField fx:id="saveText" layoutX="336.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Game name" />
+                  <Button layoutX="416.0" layoutY="62.0" mnemonicParsing="false" onAction="#saveGame" text="Save game" />
+                  <ComboBox fx:id="dropDownPuzzles" layoutX="115.0" layoutY="31.0" prefHeight="25.0" prefWidth="80.0" promptText="Difficulties" />
+                  <Button layoutX="195.0" layoutY="31.0" mnemonicParsing="false" onAction="#loadPuzzle" text="Load puzzle" />
                </children>
             </Pane>
             <Pane fx:id="board" />

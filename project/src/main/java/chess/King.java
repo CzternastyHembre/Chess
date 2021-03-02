@@ -33,11 +33,14 @@ public class King extends Piece{
 							super.path.add(p);
 						}
 					}
-				}
-				
+				}	
 			}
-			
 		}
+//Check castle
+//		for (int i = -1; i <= 1; i++) {
+//			if (!this.isMoved()) {
+//			}
+//		}
 		
 		return path;
 	}

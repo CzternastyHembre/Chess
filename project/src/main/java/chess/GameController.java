@@ -1,5 +1,6 @@
 package chess;
-
+//TODO
+//Castle, en pessant, queening, puzzles(?), validating/testing
 
 
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.util.Pair;
+import java.util.concurrent.TimeUnit;
 
 public class GameController {
 	
@@ -30,6 +32,9 @@ public class GameController {
 	
 	@FXML
 	Pane board;
+	
+	@FXML
+	Pane controlPane;
 	
 	@FXML
 	Label feedBackLabel;
@@ -40,14 +45,20 @@ public class GameController {
 	@FXML
 	TextField textField;
 	
+//	@FXML
+//	Button buttonMove;
+	
 	@FXML
-	Button buttonMove;
+	ComboBox<String> dropDownPuzzles;
 	
 	@FXML
 	TextField saveText;
 
 	@FXML
 	ComboBox<String> dropDown;
+	
+	@FXML 
+	Label moveLabel;
 	
 	@FXML
 	private void initialize() {
@@ -107,6 +118,23 @@ public class GameController {
 			board.getChildren().add(label);
 		}
 	}
+	@FXML
+	public void loadPuzzle() {
+		if (game.getSize() != 8) {
+			feedBackLabel.setText("Unable to load on this type of board"); //TODO
+			return;
+		}
+		String name = dropDownPuzzles.getValue();
+		try {
+			game.loadPuzzle(name);	
+			feedBackLabel.setText("Game load success");
+		} catch (Exception e) {
+			feedBackLabel.setText(e.getMessage());
+		}
+		drawPieces();
+		
+		
+	}
 	
 	@FXML
 	public void onEnter() {
@@ -115,56 +143,97 @@ public class GameController {
 //			tiles = game.getPosPathsLAN(textField.getText());
 //		} else {			
 //		}
-		game.moveFromStringLAN(textField.getText());
-		textField.setText(null);
-		drawPieces();
+		try {
+			String stringLAN = textField.getText();
+			Pair<String, String> move = game.convertLANtoPair(stringLAN);
+//			moveFromPair(move);
+			game.movePiece(move);
+			drawPieces();
+			feedBackLabel.setText(null);
+		} catch (Exception e) {
+			feedBackLabel.setText(e.getMessage());
+		}
 //		markTiles(tiles);
 	}
 	
 	@FXML
-	public void resetGame() {
-		game.resetGame8();
-		this.drawPieces();
+	public void resetGame8() {
+//		if (game.getSize() != 8) {
+//			feedBackLabel.setText("Unable to reset this type of board"); //TODO
+//			return;
+//		}
+//		
+		try {
+			initialize();
+			feedBackLabel.setText("Game reset success");			
+		} catch (Exception e) {
+			feedBackLabel.setText(e.getMessage());
+			// TODO: handle exception
+		}
+//		game.resetGame8();
 	}
 	
 	@FXML
 	public void loadGame() {
-		System.out.println(dropDown.getValue());
-		String name = dropDown.getValue();
-		if (name == null) {
-			throw new IllegalArgumentException("You need to choose a game");
+		if (game.getSize() != 8) {
+			feedBackLabel.setText("Unable to load on this type of board"); //TODO
+			return;
 		}
-		game.loadGame(name);
+		String name = dropDown.getValue();
+		try {
+			game.loadGame(name);	
+			feedBackLabel.setText("Game load success");
+		} catch (Exception e) {
+			feedBackLabel.setText(e.getMessage());
+		}
 		drawPieces();
 	}
+	
+	
 	
 	@FXML
 	public void saveGame() {
+		if (game.getSize() != 8) {
+			feedBackLabel.setText("Unable to save this type of board"); //TODO
+			return;
+		}
 		try {
 			game.saveGame(saveText.getText());
+			feedBackLabel.setText("Game save success");
+			saveText.setText(null);
 			drawPieces();
 		} catch (Exception e) {
-			this.feedBackLabel.setText("Game name already exsists");
+			this.feedBackLabel.setText(e.getMessage());
 		}
 	}
 	
-	public void moveFromMovePair(Pair<String, String> move) {
-		game.movePiece(move);
-		feedBackLabel.setText(null);
-		String color;
-		int turn = game.getTurn();
-		if (game.isGameOver()) {
-			if (game.checkInChess(turn)) {
-				if (1 - turn == 0){color = "white";}else{color="black";}
-				feedBackLabel.setText("Checkmate, " + color + " won");
+	public void moveFromPair(Pair<String, String> move) {
+		try {
+			game.movePiece(move);
+			String moveLAN = game.convertPairToLAN(move);
+			int moveNr = (int) (game.getMoves().size() + 1) / 2;
+			String moveString = moveNr + ". " + moveLAN.substring(0, 2) + "-" + moveLAN.substring(2,4);
+			String color;
+			feedBackLabel.setText(null);
+			int turn = game.getTurn();
+			if (game.isGameOver()) {
+				if (game.checkInChess(turn)) {
+					if (1 - turn == 0){color = "white";}else{color="black";}
+					feedBackLabel.setText(color + " won");
+					moveString += "#";
 //				System.out.println("Checkmate, " + color + " won");				
-			} else {
+				} else {
 //				System.out.println("Stalemate LOL");
-				feedBackLabel.setText("Draw, It's a stalemate");
+					feedBackLabel.setText("Draw, It's a stalemate");
+				}	
+			}  else if (game.checkInChess(turn)) {
+				moveString += "+";
 			}
+			drawPieces();
+			moveLabel.setText(moveString);
+		} catch (Exception e) {
+			feedBackLabel.setText(e.getMessage());
 		}
-
-		drawPieces();
 	}
 	
 	private void showPosTiles(List<Pair<String, String>> tiles) {
@@ -173,6 +242,7 @@ public class GameController {
 	}
 	
 	private void drawPieces() {
+//		moveLabel.setText(null);
 		double boardSize = anchorPane.getPrefWidth();
 		int tileSize = (int) (boardSize / game.getSize());
 		for (int y = 0; y < game.getSize(); y++) {
@@ -196,21 +266,68 @@ public class GameController {
 				} 
 			}
 		}
+		markLastMove();			
 		ObservableList<String> names = FXCollections.observableArrayList();
 		List<String[]> games = game.getGames();
 		for (String[] game : games) {
 			names.add(game[0]);
 		}
 		dropDown.setItems(names);
+//		TODO
+		ObservableList<String> namesPuzzle = FXCollections.observableArrayList();
+		List<String[]> gamesPuzzle = game.getPuzzles();
+		for (String[] game : gamesPuzzle) {
+			namesPuzzle.add(game[0]);
+		}
+		dropDownPuzzles.setItems(namesPuzzle);
 
 	}
+	private void markLastMove() {
+		if (game.getMoves().size() == 0) {
+			return;
+		}
+		Pair<String, String> move = game.getMoves().get(game.getMoves().size() - 1);			
+
+		int startX = Integer.parseInt("" + move.getValue().charAt(0));
+		int startY = Integer.parseInt("" + move.getValue().charAt(1));
+		int endX = Integer.parseInt("" + move.getKey().charAt(0));
+		int endY = Integer.parseInt("" + move.getKey().charAt(1));
+		String col;
+		Pane tileStart = (Pane) board.getChildren().get(startY * game.getSize() + startX);
+		Pane tileEnd= (Pane) board.getChildren().get(endY * game.getSize() + endX);
+
+		
+		if ((startX + startY) % 2 == 0) {
+			col = "dd9769"; //Light			
+		} else {
+			col = "#aa6e40"; //Dark			
+		}
+		tileStart.setStyle("-fx-background-color: " + col);
+		
+		if ((endX + endY) % 2 == 0) {
+			col = "#ff9769"; //Light			
+		} else {
+			col = "#aa6e40"; //Dark			
+		}
+		tileEnd.setStyle("-fx-background-color: " + col);
+	}
+	
+	@FXML
+	public void undoMove() {
+		try {
+			game.undoLastMove();			
+		} catch (Exception e) {
+			feedBackLabel.setText(e.getMessage());
+		}
+		drawPieces();
+	}
+	
 	
 	private void markTiles(List<Pair<String, String>> tiles) {
-		double boardSize = anchorPane.getPrefWidth();
-		int tileSize = (int) (boardSize / game.getSize());
-		String letters = "abcdefgh";
+//		double boardSize = anchorPane.getPrefWidth();
+//		int tileSize = (int) (boardSize / game.getSize());
+//		String letters = "abcdefgh";
 		String col;
-		
 		for (Pair<String, String> move : tiles) {
 			int x = Integer.parseInt("" + move.getValue().charAt(0));
 			int y = Integer.parseInt("" + move.getValue().charAt(1));
@@ -221,7 +338,7 @@ public class GameController {
 			}
 			Pane tile = (Pane) board.getChildren().get(y * game.getSize() + x);
 			tile.setStyle("-fx-background-color: " + col);
-			tile.setOnMouseClicked(e -> this.moveFromMovePair(move));
+			tile.setOnMouseClicked(e -> this.moveFromPair(move));
 		}
 	}	
 }
