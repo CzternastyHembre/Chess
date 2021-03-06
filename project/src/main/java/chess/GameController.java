@@ -165,7 +165,8 @@ public class GameController {
 //		
 		try {
 			initialize();
-			feedBackLabel.setText("Game reset success");			
+			feedBackLabel.setText("Game reset success");
+			moveLabel.setText(null);
 		} catch (Exception e) {
 			feedBackLabel.setText(e.getMessage());
 			// TODO: handle exception
@@ -219,7 +220,7 @@ public class GameController {
 			if (game.isGameOver()) {
 				if (game.checkInChess(turn)) {
 					if (1 - turn == 0){color = "white";}else{color="black";}
-					feedBackLabel.setText(color + " won");
+					feedBackLabel.setText("Mate " + color + " won");
 					moveString += "#";
 //				System.out.println("Checkmate, " + color + " won");				
 				} else {
@@ -312,15 +313,15 @@ public class GameController {
 		tileEnd.setStyle("-fx-background-color: " + col);
 	}
 	
-	@FXML
-	public void undoMove() {
-		try {
-			game.undoLastMove();			
-		} catch (Exception e) {
-			feedBackLabel.setText(e.getMessage());
-		}
-		drawPieces();
-	}
+//	@FXML
+//	public void undoMove() {
+//		try {
+//			game.undoLastMove();			
+//		} catch (Exception e) {
+//			feedBackLabel.setText(e.getMessage());
+//		}
+//		drawPieces();
+//	}
 	
 	
 	private void markTiles(List<Pair<String, String>> tiles) {

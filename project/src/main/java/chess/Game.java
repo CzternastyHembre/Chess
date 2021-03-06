@@ -230,16 +230,23 @@ public class Game {
 		Pair<String, String> reversedMove = new Pair(lastMove.getValue(), lastMove.getKey());
 		
 		this.prevTurn();
+		
 		int startX = Integer.parseInt(reversedMove.getKey().charAt(0) + "");
 		int startY = Integer.parseInt(reversedMove.getKey().charAt(1) + "");
 		int endX = Integer.parseInt(reversedMove.getValue().charAt(0) + "");
 		int endY = Integer.parseInt(reversedMove.getValue().charAt(1) + "");
 
 		//Move the piece back and add the taken piece
-		board[endY][endX] = board[startY][startX];
-		board[startY][startX] = lastPiece;
-		board[endY][endX].setX(endX);
-		board[endY][endX].setY(endY);
+		if (!board[startY][startX].isFresh()) {
+			board[endY][endX] = board[startY][startX];
+			board[startY][startX] = lastPiece;
+			board[endY][endX].setX(endX);
+			board[endY][endX].setY(endY);			
+		} else {
+			Piece p = new Pawn(endX, endY, board[startY][startX].getColor(), this.board);
+			board[endY][endX] = p;
+			board[startY][startX] = lastPiece;
+		}
 	}
 	
 	public void moveFromStringLAN(String LAN) {
@@ -349,17 +356,16 @@ public class Game {
 		this.nextTurn();
 		moves.add(move);
 		
-		//TODO: mekk queening, må fikse undolastmove!!
-//		if (this.board[endY][endX].getType() == 'P' && (endY == 0 || endY == this.board.length - 1)) {
-//			this.board[endY][endX] = new Queen(endX, endY, 0, this.board);
-//		}
 	}
 	
 	public void movePiece(Pair<String, String> move) {
+		if (isGameOver) {
+			throw new IllegalStateException("Game is over");
+		}
+
 		this.moveFromPair(move);
 		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
 		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
-		this.board[endY][endX].setHasMoved(true);
 
 		if (this.checkMate()) {
 			this.isGameOver = true;
@@ -521,7 +527,6 @@ public class Game {
 		return null;
 	}
 	
-	//TODO
 	public String getPuzzle(String name) {
 		if (name == null) {
 			throw new IllegalStateException("No game set to load");			

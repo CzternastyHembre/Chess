@@ -7,12 +7,13 @@ import javafx.util.Pair;
 
 public abstract class Piece implements IntPiece{
 	//Bytt til privva!
+
+	private boolean isFresh = true;
 	protected int x;
 	protected int y;
 	protected int color; //0 is White, 1 is Black
 	protected char type;
 	protected Piece[][] board;
-	private boolean hasMoved = false;
 	protected List<Pair<String, String>> path = new ArrayList<Pair<String, String>>();
 	protected String filePath = "file:C:\\Users\\matti\\git\\tdt4100-prosjekt-mattisch\\project\\src\\main\\resources\\images\\";
 
@@ -27,14 +28,6 @@ public abstract class Piece implements IntPiece{
 		this.color = color;
 		this.board = board;
 		this.type = type;
-	}
-	
-	public void setHasMoved(boolean hasMoved) {
-		this.hasMoved = hasMoved;
-	}
-
-	public boolean isMoved() {
-		return this.hasMoved;
 	}
 	
 	public String getFilePath() {
@@ -86,6 +79,13 @@ public abstract class Piece implements IntPiece{
 //		return blackPath;
 //		
 //	}
+	public boolean isFresh() {
+		return isFresh;
+	}
+	
+	public void makeOld() {
+		this.isFresh = false;
+	}
 
 	public abstract List<Pair<String, String>> getPath();
 
@@ -93,10 +93,23 @@ public abstract class Piece implements IntPiece{
 		if (!this.isLegalMove(x_to, y_to)) {
 			throw new IllegalStateException("Not a legal move");
 		}
-		board[y_to][x_to] = this;
-		board[this.y][this.x] = null;
-		this.x = x_to;
-		this.y = y_to; 
+		if (this.type == 'P' && (y_to == 0 || y_to == this.board.length - 1)) {
+			board[y_to][x_to] = new Queen(x_to, y_to, this.color, this.board);
+			board[this.y][this.x] = null;
+			board[y_to][x_to].isFresh = true;
+		} else {
+			board[y_to][x_to] = this;
+			board[this.y][this.x] = null;
+			this.x = x_to;
+			this.y = y_to; 			
+			board[y_to][x_to].isFresh = false;
+		}
+		
+		
+//		if (this.board[endY][endX].getType() == 'P' && (endY == 0 || endY == this.board.length - 1)) {
+//			this.board[endY][endX] = new Queen(endX, endY, 0, this.board);
+//		}
+
 	}
 	
 	public boolean isLegalMove(int x_to, int y_to) {

@@ -38,7 +38,6 @@
                      <font>
                         <Font size="16.0" />
                      </font></TextField>
-                  <Button layoutX="399.0" layoutY="18.0" mnemonicParsing="false" onAction="#undoMove" text="Undo" />
                   <Button layoutX="445.0" layoutY="18.0" mnemonicParsing="false" onAction="#resetGame8" text="Reset" />
                   <ComboBox fx:id="dropDown" layoutX="115.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Games" />
                   <Button layoutX="195.0" layoutY="62.0" mnemonicParsing="false" onAction="#loadGame" text="Load game" />

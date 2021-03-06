@@ -5,7 +5,6 @@ import java.util.List;
 import javafx.util.Pair;
 
 public class Pawn extends Piece{
-	
 	public Pawn(int x, int y, int color, Piece[][] board) {
 		super(x, y, color, board, 'P');
 		if (color == 0) {
@@ -24,7 +23,6 @@ public class Pawn extends Piece{
 		if (this.isWhite()) {
 			ydir = -1;
 		}
-
 		//Move piece
 		if (this.y + ydir >= 0 && this.y + ydir < this.board.length) {//Check y+ydir inside board
 			

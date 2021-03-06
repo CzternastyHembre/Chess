@@ -13,8 +13,9 @@ public class Queen extends Piece{
 		} else {
 			this.filePath += "queen-black.png";			
 		}
-
 	}
+	
+	
 
 	@Override
 	public List<Pair<String, String>> getPath() {//	Queen path is just bish + rook
