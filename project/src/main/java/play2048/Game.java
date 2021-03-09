@@ -1,14 +1,14 @@
 package play2048;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sun.tools.javac.code.Attribute.Array;
 
 public class Game {
-	
 	private Tile[][] board;
 	private int heigth;
 	private int width;
@@ -32,92 +32,187 @@ public class Game {
 		}
 	}
 	
-	
-	public void move(int yDir, int xDir) {
+	public int getHeigth() {
+		return heigth;
+	}
+	public int getWidth() {
+		return width;
+	}
+	public int getScore() {
+		return score;
+	}
+	public Tile[][] getBoard() {
+		return board;
 	}
 	
-	public void moveUp() {
-		move(-1, 0);
+
+	public void sortX(Comparator<Tile> comparator) {
+		for (Tile[] row : board) {//Goes trough all rows an sort them so the "null" tiles are at the end
+			Arrays.sort(row, comparator);
+		}
 	}
-	public void moveDown() {
+	
+	public boolean checkIdentical(Tile[][] b1, Tile[][] b2) {
+		for (int y = 0; y < heigth; y++) {
+			for (int x = 0; x < width; x++) {
+				if (b1[y][x] == null || b2[y][x] == null) {
+					if (b1[y][x] != b2[y][x]) {
+						return false;
+					}
+					
+				} else if (b1[y][x].getValue() != b2[y][x].getValue()) {
+					return false;
+				}
+			}
+		}
+		throw new IllegalArgumentException("Not allowed to move there");
+	}
+	
+	public void sortRight() {
+		sortX(new TileComparator());
+	}
+	public void sortLeft() {
+		sortX(new TileComparator().reversed());
+	}
+	
+	public void flipBoard() {
 		Tile[][] colrow = new Tile[width][heigth];
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < heigth; y++) {
+		this.heigth = colrow.length;
+		this.width = colrow[0].length;
+		for (int y = 0; y < board.length; y++) {
+			for (int x = 0; x < board[y].length; x++) {
 				colrow[x][y] = board[y][x];
 			}
 		}
-		for (Tile[] col : colrow) {
-			Arrays.sort(col, new TileComparator());
-		}
-		for (Tile[] row : colrow) {
-			for (int i = row.length - 1; i > 0; i--) {
-				if (row[i] != null && row[i-1] != null) {
-					if (row[i].getValue() == row[i - 1].getValue()) {
-						row[i].nextValue();
-						row[i-1] = null;
-						this.score += row[i].getValue();
-						
-					}
-				}
-			}
-		}
-		for (Tile[] col : colrow) {
-			Arrays.sort(col, new TileComparator());
-		}
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < heigth; y++) {
-				board[y][x] = colrow[x][y];
-			}
-		}
-		
-		
+		board = colrow;
 	}
-	public void moveRight() {
+	
+	public void sortY(Comparator<Tile> comparator) {
+		flipBoard();
+		sortX(comparator);
+		flipBoard();
+	}
+	public void sortUp() {
+		sortY(new TileComparator().reversed());		
+	}
+	public void sortDown() {
+		sortY(new TileComparator());
+	}
+	
+	public void addX(int dir) {
 		for (Tile[] row : board) {
-			Arrays.sort(row, new TileComparator());
-		}
-		for (Tile[] row : board) {
-			for (int i = row.length - 1; i > 0; i--) {
-				if (row[i] != null && row[i-1] != null) {
-					if (row[i].getValue() == row[i - 1].getValue()) {
+			for (int x = 0; x < width - 1; x++) {//Iterates through matrix
+				int i = dir > 0 ? x : width - x - 1;//Counts x up if x < 0 and down from width if x > 0
+				if (row[i] != null && row[i + dir] != null) {
+					if (row[i].getValue() == row[i + dir].getValue()) {
 						row[i].nextValue();
-						row[i-1] = null;
-						this.score += row[i].getValue();
-
+						row[i + dir] = null;
+						score += row[i].getValue();
 					}
 				}
 			}
-		}	
-		for (Tile[] row : board) {
-			Arrays.sort(row, new TileComparator());
 		}
+	}
+	public void addRight() {
+		addX(-1);
+	}
+	public void addLeft() {
+		addX(1);
+	}
+	
+	public void addY(int dir) {
+		flipBoard();
+		addX(dir);
+		flipBoard();
+	}
+	public void addUp() {
+		addY(1);
+	}
+	public void addDown() {
+		addY(-1);
+	}
+	
+	public void moveRight() {
+		Tile[][] boardCopy = new Tile[heigth][width];
+
+		for (int y = 0; y < heigth; y++) {
+			for (int x = 0; x < width; x++) {
+				boardCopy[y][x] = board[y][x];
+			}
+		}
+
+		sortRight();
+		addRight();
+		sortRight();
+		
+		checkIdentical(boardCopy, board);
+		addTile();
 		
 	}
 	public void moveLeft() {
-		for (Tile[] row : board) {
-			Arrays.sort(row, new TileComparator());
-		}
-		for (Tile[] row : board) {
-			for (int i = row.length - 1; i > 0; i--) {
-				if (row[i] != null && row[i-1] != null) {
-					if (row[i].getValue() == row[i - 1].getValue()) {
-						row[i].nextValue();
-						row[i-1] = null;
-						this.score += row[i].getValue();
+		Tile[][] boardCopy = new Tile[heigth][width];
 
-					}
+		for (int y = 0; y < heigth; y++) {
+			for (int x = 0; x < width; x++) {
+				boardCopy[y][x] = board[y][x];
+			}
+		}
+
+		sortLeft();
+		addLeft();
+		sortLeft();
+		
+		checkIdentical(boardCopy, board);
+		addTile();
+}
+	public void moveUp() {
+		Tile[][] boardCopy = new Tile[heigth][width];
+
+		for (int y = 0; y < heigth; y++) {
+			for (int x = 0; x < width; x++) {
+				boardCopy[y][x] = board[y][x];
+			}
+		}
+
+		sortUp();
+		addUp();
+		sortUp();
+		
+		checkIdentical(boardCopy, board);
+		addTile();
+	}
+	public void moveDown() {
+		Tile[][] boardCopy = new Tile[heigth][width];
+
+		for (int y = 0; y < heigth; y++) {
+			for (int x = 0; x < width; x++) {
+				boardCopy[y][x] = board[y][x];
+			}
+		}
+
+		sortDown();
+		addDown();
+		sortDown();
+		
+		checkIdentical(boardCopy, board);
+		addTile();
+	}
+
+	public void addTile() {
+		List<Integer> emptyIndexes = new ArrayList<>();
+		for (int y = 0; y < heigth; y++) {
+			for (int x = 0; x < width; x++) {
+				if (board[y][x] == null) {
+					emptyIndexes.add(y * width + x);
 				}
 			}
-		}	
-		for (Tile[] row : board) {
-			Arrays.sort(row, new TileComparator());
 		}
-
-		for (Tile[] row : board) {
-			List<Tile> rowList = Arrays.asList(row);
-			Collections.reverse(rowList);
+		int l = emptyIndexes.size();
+		if (l == 0) {
+			throw new IllegalArgumentException("No space"); // Wont ever happen, throws beefore
 		}
-			
+		int rIndex = (int) Math.floor(Math.random()*l);
+		board[emptyIndexes.get(rIndex) / width][emptyIndexes.get(rIndex) % width] = new Tile();
 	}
 	
 	@Override
@@ -145,33 +240,12 @@ public class Game {
 	public static void main(String[] args) {
 		Game g = new Game(4, 4);
 		System.out.println(g);
-		for (int i = 0; i < 100; i++) {
-			g.board[0][0] = new Tile();
+		for (int i = 0; i < 50; i++) {
 			g.moveDown();
 			System.out.println(g);
 			g.moveRight();
 			System.out.println(g);
-			System.out.println(g.score);
 		}
-		
-//		g.moveLeft();
-//		System.out.println(g);
-		
-		
-//		Tile t1 = new Tile();
-//		Tile t2 = new Tile();
-//		
-//		
-//		Tile[] row = {t1,null, t2, null};
-//		
-//		System.out.println(row[0] + " " +row[1] + " " +row[2] + " " +row[3]);
-//		Arrays.sort(row, new TileComparator());
-//		System.out.println(row[0] + " " +row[1] + " " +row[2] + " " +row[3]);
-		
-		
-		
-		
-//		g.move(-1, -1); TODO
-
+		System.out.println(g.score);
 	}
 }
