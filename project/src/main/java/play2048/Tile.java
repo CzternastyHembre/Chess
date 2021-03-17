@@ -14,8 +14,7 @@ public class Tile {
 			"F4C117", // -> 512
 			"FAE34F", // -> 1024
 			"C59E49", // -> 2048
-			"c09400", // -> 4096
-			
+			"c09400", // -> 4096			
 	};
 	private int colorIndex = 0;
 	

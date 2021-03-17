@@ -21,19 +21,19 @@ public class GameController{
 	
 	@FXML
 	private void initialize() {
-		game = new Game(4,2);
-		game.getBoard()[0][0] = new Tile(1);
-		for (int y = 0; y < game.getHeigth(); y++) {
-			for (int x = 0; x < game.getWidth(); x++) {
-				if (y + x != 0) {
-					if (y % 2 == 0) {
-						game.getBoard()[y][x] = new Tile(y*game.getWidth() + x);										
-					} else {						
-						game.getBoard()[y][game.getWidth()-1-x] = new Tile(y*game.getWidth() + x);										
-					}
-				} 
-			}
-		}
+		game = new Game(4,4);
+//		game.getBoard()[0][0] = new Tile(1);
+//		for (int y = 0; y < game.getHeigth(); y++) {
+//			for (int x = 0; x < game.getWidth(); x++) {
+//				if (y + x != 0) {
+//					if (y % 2 == 0) {
+//						game.getBoard()[y][x] = new Tile(y*game.getWidth() + x);										
+//					} else {						
+//						game.getBoard()[y][game.getWidth()-1-x] = new Tile(y*game.getWidth() + x);										
+//					}
+//				} 
+//			}
+//		}
 		createBoard();
 		drawTiles();
 		
@@ -45,10 +45,11 @@ public class GameController{
 		board.setStyle("-fx-background-color: #aeaeae;");
 		board.getChildren().clear();
 		
-		int width = 400;
+		int width = 700;
 		int heigth = width * game.getHeigth() / game.getWidth();
 		
-		int tileWidth = width / game.getWidth();
+		int max = (int) Math.max(width, heigth);
+		int tileWidth = max / game.getWidth();
 		int tileHeight = tileWidth;
 		board.setPrefWidth(width);
 		board.setPrefHeight(heigth);
@@ -81,7 +82,7 @@ public class GameController{
 			for (int x = 0; x < game.getWidth(); x++) {
 				Pane tile = (Pane) board.getChildren().get(y * game.getWidth() + x);
 				tile.getChildren().clear();
-				String style = "-fx-border-color: black; -fx-border-width: 3px;";
+				String style = "-fx-border-color: grey; -fx-border-width: 10px;";
 				if (game.getBoard()[y][x] != null) {
 					Label text = new Label("" + game.getBoard()[y][x].getValue());
 					int l = game.getBoard()[y][x].getLength();

@@ -545,7 +545,7 @@ public class Game {
 	public static void main(String[] args) {
 		Game b = new Game(8);
 		b.init8();
-//		System.out.println(b);	
+		System.out.println(b);	
 //		b.loadGame("TESTgame");
 //		System.out.println(b);	
 //		b.resetGame8();
