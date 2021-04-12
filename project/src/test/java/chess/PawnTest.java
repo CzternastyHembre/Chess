@@ -81,21 +81,20 @@ public class PawnTest {
 	}
 	
 	@Test
-	public void testPawnToQueen() { //TODO Havent implementet queening
+	public void testPawnToQueen() {
 		pawnBlack.moveTo(0, 3);
 		pawnBlack.moveTo(0, 4);
 		pawnBlack.moveTo(0, 5);
 		pawnBlack.moveTo(0, 6);
 		pawnBlack.moveTo(0, 7);
 		
-		Piece blackQueen = new Queen(0, 7, 0, null);
 
-		Assertions.assertEquals(blackQueen.getClass(), game.getPiece(0, 7).getClass());
-		Assertions.assertEquals(true, game.getPiece(0, 7).isFresh());
+		Assertions.assertTrue(game.getPiece(0, 7) instanceof Queen);
+		Assertions.assertTrue(game.getPiece(0, 7).isFresh());
 		
 		game.getPiece(0, 7).moveTo(5, 7);
-		Assertions.assertEquals(blackQueen.getClass(), game.getPiece(5, 7).getClass());
-		Assertions.assertEquals(false, game.getPiece(5, 7).isFresh());
+		Assertions.assertTrue(game.getPiece(5, 7) instanceof Queen);
+		Assertions.assertFalse(game.getPiece(5, 7).isFresh());
 		
 		
 		pawnWhite.moveTo(1, 4);
@@ -104,14 +103,12 @@ public class PawnTest {
 		pawnWhite.moveTo(1, 1);
 		pawnWhite.moveTo(1, 0);
 		
-		Piece whiteQueen = new Queen(1, 0, 1, null);
-
-		Assertions.assertEquals(whiteQueen.getClass(), game.getPiece(1, 0).getClass());
-		Assertions.assertEquals(true, game.getPiece(1, 0).isFresh());
+		Assertions.assertTrue(game.getPiece(1, 0) instanceof Queen);
+		Assertions.assertTrue(game.getPiece(1, 0).isFresh());
 		
 		game.getPiece(1, 0).moveTo(5, 0);
-		Assertions.assertEquals(whiteQueen.getClass(), game.getPiece(5, 0).getClass());
-		Assertions.assertEquals(false, game.getPiece(5, 0).isFresh());
+		Assertions.assertTrue(game.getPiece(5, 0) instanceof Queen);
+		Assertions.assertFalse(game.getPiece(5, 0).isFresh());
 
 	}
 

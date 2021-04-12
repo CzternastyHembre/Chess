@@ -162,7 +162,6 @@ public class GameController {
 //			feedBackLabel.setText("Unable to reset this type of board"); //TODO
 //			return;
 //		}
-//		
 		try {
 			initialize();
 			feedBackLabel.setText("Game reset success");
@@ -177,12 +176,18 @@ public class GameController {
 	@FXML
 	public void loadGame() {
 		if (game.getSize() != 8) {
-			feedBackLabel.setText("Unable to load on this type of board"); //TODO
+			feedBackLabel.setText("Unable to load on this type of board"); //TODO make a initalize with sizes...
 			return;
 		}
 		String name = dropDown.getValue();
 		try {
-			game.loadGame(name);	
+			game.loadGame(name);
+			
+			//Does the last move here so the movelabel get updated TODO make a method in game to get the movetring....
+			Pair<String, String> lastMove = game.getMoves().get(game.getMoves().size() - 1);
+			game.undoLastMove();
+			this.moveFromPair(lastMove);
+			
 			feedBackLabel.setText("Game load success");
 		} catch (Exception e) {
 			feedBackLabel.setText(e.getMessage());

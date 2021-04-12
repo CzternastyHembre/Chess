@@ -6,7 +6,7 @@ import java.util.List;
 import javafx.util.Pair;
 
 public abstract class Piece implements IntPiece{
-	//Bytt til privva!
+	//Bytt til privva! TODO
 
 	private boolean isFresh = true;
 	protected int x;
@@ -29,7 +29,6 @@ public abstract class Piece implements IntPiece{
 		this.board = board;
 		this.type = type;
 	}
-	
 	public String getFilePath() {
 		return filePath;
 	}
@@ -93,7 +92,7 @@ public abstract class Piece implements IntPiece{
 		if (!this.isLegalMove(x_to, y_to)) {
 			throw new IllegalStateException("Not a legal move");
 		}
-		if (this.type == 'P' && (y_to == 0 || y_to == this.board.length - 1)) {
+		if (this.type == 'P' && (y_to == 0 || y_to == this.board.length - 1)) {//check if a pawn is at the edge of the board -> queening
 			board[y_to][x_to] = new Queen(x_to, y_to, this.color, this.board);
 			board[this.y][this.x] = null;
 			board[y_to][x_to].isFresh = true;

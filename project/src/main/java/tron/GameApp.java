@@ -1,4 +1,4 @@
-package play2048;
+package tron;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +11,7 @@ public class GameApp extends Application{
 	@Override
 	public void start(Stage stage) throws Exception{
 		Parent parent = FXMLLoader.load(getClass().getResource("Game.fxml"));
-		stage.setTitle("2048");
+		stage.setTitle("TRON");
 		stage.setScene(new Scene(parent));
 		stage.show();
 	}
