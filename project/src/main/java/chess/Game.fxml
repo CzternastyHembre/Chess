@@ -38,14 +38,16 @@
                      <font>
                         <Font size="16.0" />
                      </font></TextField>
-                  <Button layoutX="445.0" layoutY="18.0" mnemonicParsing="false" onAction="#resetGame8" text="Reset" />
+                  <Button layoutX="376.0" layoutY="18.0" mnemonicParsing="false" onAction="#init8by8" text="8x8" />
+                  <Button layoutX="410.0" layoutY="18.0" mnemonicParsing="false" onAction="#init5by5" text="5x5" />
+                  <Button layoutX="445.0" layoutY="18.0" mnemonicParsing="false" onAction="#resetGame" text="Reset" />
                   <ComboBox fx:id="dropDown" layoutX="115.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Games" />
                   <Button layoutX="195.0" layoutY="62.0" mnemonicParsing="false" onAction="#loadGame" text="Load game" />
                   <TextField fx:id="saveText" layoutX="336.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Game name" />
                   <Button layoutX="416.0" layoutY="62.0" mnemonicParsing="false" onAction="#saveGame" text="Save game" />
-                  <ComboBox fx:id="dropDownPuzzles" layoutX="115.0" layoutY="31.0" prefHeight="25.0" prefWidth="80.0" promptText="Difficulties" />
+<!--                   <ComboBox fx:id="dropDownPuzzles" layoutX="115.0" layoutY="31.0" prefHeight="25.0" prefWidth="80.0" promptText="Difficulties" />
                   <Button layoutX="195.0" layoutY="31.0" mnemonicParsing="false" onAction="#loadPuzzle" text="Load puzzle" />
-               </children>
+ -->               </children>
             </Pane>
             <Pane fx:id="board" />
          </children>

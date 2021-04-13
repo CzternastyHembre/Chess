@@ -1,17 +1,15 @@
 package chess;
 
-import java.io.File; 
-import java.util.Scanner; 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import chess.pieces.Bishop;
+import chess.pieces.King;
+import chess.pieces.Knight;
+import chess.pieces.Pawn;
+import chess.pieces.Piece;
+import chess.pieces.Queen;
+import chess.pieces.Rook;
+import chess.saveHandler.ChessSaveHandler;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javafx.util.Pair;
@@ -25,6 +23,10 @@ public class Game {
 	private List<Piece> takenPieces = new ArrayList<>();
 	private List<Pair<String, String>> posibleMoves = new ArrayList<>();
 	private boolean isGameOver = false;
+	
+	public void setGameOver(boolean isGameOver) {
+		this.isGameOver = isGameOver;
+	}
 	
 	public boolean isGameOver() {
 		return this.isGameOver;
@@ -62,7 +64,19 @@ public class Game {
 	public int getSize() {
 		return size;
 	}
-	
+	public void init(int i) {
+		
+		switch (i) {
+		case 8:
+			init8();
+			break;
+		case 5:
+			init5();
+			break;
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + i);
+		}
+	}
 	public void init8() {//init pieces in 8x8
 		
 		//init Pawns
@@ -227,7 +241,7 @@ public class Game {
 			throw new IllegalStateException("Can't undo in this state");
 		}
 		//Reversing the move
-		Pair<String, String> reversedMove = new Pair(lastMove.getValue(), lastMove.getKey());
+		Pair<String, String> reversedMove = new Pair<>(lastMove.getValue(), lastMove.getKey());
 		
 		this.prevTurn();
 		
@@ -312,7 +326,7 @@ public class Game {
 			throw new IllegalArgumentException("No piece at " + LAN.substring(0,2));							
 		}
 
-		Pair<String, String> pairMove = new Pair("" + startX + startY, "" + endX + endY);
+		Pair<String, String> pairMove = new Pair<>("" + startX + startY, "" + endX + endY);
 		return pairMove;
 	}
 	
@@ -364,8 +378,8 @@ public class Game {
 		}
 
 		this.moveFromPair(move);
-		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
-		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
+//		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
+//		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
 
 		if (this.checkMate()) {
 			this.isGameOver = true;
@@ -414,32 +428,17 @@ public class Game {
 		return boardString;
 	}
 	
-	public void saveToFileString(String s) {
-	    try {
-	        FileWriter fileWriter = new FileWriter("src/main/resources/storage/playedGames.txt", true); //Set true for append mode
-	        PrintWriter printWriter = new PrintWriter(fileWriter);
-	        printWriter.println(s);  //New line
-	        printWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void saveToFileString(String s) {
+//	    try {
+//	        FileWriter fileWriter = new FileWriter("src/main/resources/storage/playedGames.txt", true); //Set true for append mode
+//	        PrintWriter printWriter = new PrintWriter(fileWriter);
+//	        printWriter.println(s);  //New line
+//	        printWriter.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
-	public List<String[]> getGames() {
-		List<String[]> games = new ArrayList<>();
-		try {
-			File file = new File("src/main/resources/storage/playedGames.txt");
-		    Scanner sc = new Scanner(file);
-		    while (sc.hasNextLine()) {
-		    	String[] game = sc.nextLine().split(";");
-		    	games.add(game);
-		    } 
-		    return games;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 	
 	public String convertMovesToString(List<Pair<String, String>> moves) {
 		String stringMoves = "";
@@ -460,85 +459,89 @@ public class Game {
 			throw new IllegalStateException("No pieces moved");						
 		}
 		
-		List<String[]> games = this.getGames();
+		List<String[]> games = ChessSaveHandler.getGames();
 		for (String[] game : games) {
 			if (game[0].equals(name)) {
 				throw new IllegalStateException("Game name already taken");
 			}
 		}
-		String stringMove = this.convertMovesToString(this.getMoves());
-		this.saveToFileString(name + ";" + stringMove);
+		String saveString = this.convertMovesToString(this.getMoves());
+		ChessSaveHandler.Save(name + ";" + getSize() + ";" + saveString);
+		
+//		this.saveToFileString(name + ";" + saveString);
 	}
 
-	public String getGame(String name) {
-		if (name == null) {
-			throw new IllegalStateException("No game set to load");			
-		}
-		List<String[]> games = this.getGames();
-		for (String[] game : games) {
-			if (game[0].equals(name)) {
-				return game[1];
-			}
-		}
-		throw new IllegalArgumentException("No game with this name");
-	}
+//	public String getGame(String name) {
+//		if (name == null) {
+//			throw new IllegalStateException("No game set to load");			
+//		}
+//		List<String[]> games = ChessSaveHandler.getGames();
+//		for (String[] game : games) {
+//			if (game[0].equals(name)) {
+//				return game[1];
+//			}
+//		}
+//		throw new IllegalArgumentException("No game with this name");
+//	}
 	
 	
 	public void loadGame(String name) {
-		String gameString = this.getGame(name);
-		int gameSize = this.getSize();
-		this.resetGame8();
-		this.movesFromStringLongLAN(gameString);
+		
+		String[] gameString = ChessSaveHandler.getGame(name);
+//		int gameSize = this.getSize();
+//		this.resetGame8();
+		String moveString = gameString[gameString.length - 1];
+		this.movesFromStringLongLAN(moveString);
 	}
 	
-	public void loadPuzzle(String name) {
-		String gameString = this.getPuzzle(name);
-		int gameSize = this.getSize();
-		this.resetGame8();
-		this.movesFromStringLongLAN(gameString);
-	}
+//	public void loadPuzzle(String name) {
+//		String gameString = this.getPuzzle(name);
+////		int gameSize = this.getSize();
+////		this.resetGame8();
+//		this.movesFromStringLongLAN(gameString);
+//	}
 	
 	
-	public void resetGame8() {
-		//reseting all states, idk how to create a new game
-		this.board = new Piece[this.getSize()][this.getSize()];
-		this.paths = new ArrayList<Pair<String, String>>();
-		this.turn = 0;
-		this.moves = new ArrayList<>();
-		this.takenPieces = new ArrayList<>();
-		this.posibleMoves = new ArrayList<>();
-		this.isGameOver = false;
-		this.init8();
-	}
+//	public void resetGame8() {
+//		//reseting all states, idk how to create a new game
+//		this.board = new Piece[this.getSize()][this.getSize()];
+//		this.paths = new ArrayList<Pair<String, String>>();
+//		this.turn = 0;
+//		this.moves = new ArrayList<>();
+//		this.takenPieces = new ArrayList<>();
+//		this.posibleMoves = new ArrayList<>();
+//		this.isGameOver = false;
+//		this.init8();
+//	}
 	
-	public List<String[]> getPuzzles() {
-		List<String[]> games = new ArrayList<>();
-		try {
-			File file = new File("src/main/resources/storage/puzzles.txt");
-		    Scanner sc = new Scanner(file);
-		    while (sc.hasNextLine()) {
-		    	String[] game = sc.nextLine().split(";");
-		    	games.add(game);
-		    } 
-		    return games;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	public List<String[]> getPuzzles() {
+//		List<String[]> games = new ArrayList<>();
+//		try {
+//			File file = new File("src/main/resources/storage/puzzles.txt");
+//		    Scanner sc = new Scanner(file);
+//		    while (sc.hasNextLine()) {
+//		    	String[] game = sc.nextLine().split(";");
+//		    	games.add(game);
+//		    } 
+//		    return games;
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
-	public String getPuzzle(String name) {
-		if (name == null) {
-			throw new IllegalStateException("No game set to load");			
-		}
-		List<String[]> puzzle = this.getPuzzles();
-		for (String[] game : puzzle) {
-			if (game[0].equals(name)) {
-				return game[1];
-			}
-		}
-		throw new IllegalArgumentException("No game with this name");
-	}
+//	public String getPuzzle(String name) {
+//		if (name == null) {
+//			throw new IllegalStateException("No game set to load");			
+//		}
+//		List<String[]> puzzle = this.getPuzzles();
+//		for (String[] game : puzzle) {
+//			if (game[0].equals(name)) {
+//				return game[1];
+//			}
+//		}
+//		throw new IllegalArgumentException("No game with this name");
+//	}
 
 
 	
@@ -546,12 +549,15 @@ public class Game {
 		Game b = new Game(8);
 		b.init8();
 		System.out.println(b);	
+		
 //		b.loadGame("TESTgame");
+		
 //		System.out.println(b);	
 //		b.resetGame8();
 //		System.out.println(b);	
 
-		
+//		var i = 1/2;
+//		System.out.println(i);
 		
 //		System.out.println(b.getBoard()[7][1].getPath());
 //		System.out.println(b.getBoard()[1][1].getPath());

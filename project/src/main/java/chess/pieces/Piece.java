@@ -1,13 +1,17 @@
-package chess;
+package chess.pieces;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.util.Pair;
 
 public abstract class Piece implements IntPiece{
-	//Bytt til privva! TODO
-
+	
+	/**
+	 * is "<b>fresh</b>" if the piece has newly <i>queened</i>
+	 */
 	private boolean isFresh = true;
 	protected int x;
 	protected int y;
@@ -16,11 +20,6 @@ public abstract class Piece implements IntPiece{
 	protected Piece[][] board;
 	protected List<Pair<String, String>> path = new ArrayList<Pair<String, String>>();
 	protected String filePath = "file:C:\\Users\\matti\\git\\tdt4100-prosjekt-mattisch\\project\\src\\main\\resources\\images\\";
-
-//	private List<Piece> whitePieces = new ArrayList<>();
-//	private List<Piece> blackPieces = new ArrayList<>();
-//	List<Pair<Integer, Integer>> whitePath = new ArrayList<Pair<Integer, Integer>>();
-//	List<Pair<Integer, Integer>> blackPath = new ArrayList<Pair<Integer, Integer>>();
 
 	public Piece(int x, int y, int color, Piece[][] board, char type) {
 		this.x = x;
@@ -56,71 +55,13 @@ public abstract class Piece implements IntPiece{
 	public char getType() {
 		return type;
 	}
-//	if (color == 0) {
-//		this.addToWhitePiece();
-//	} else {
-//		this.addToBlackPiece();
-//	}
-//	
-//	public void addToWhitePiece() {
-//		whitePieces.add(this);
-//	}
-//	public void addToBlackPiece() {
-//		blackPieces.add(this);
-//	} 
-//	
-//	public List<Pair<Integer, Integer>> getAllBlackPath(){
-//		for (int i = 0; i < blackPieces.size(); i++) {
-//			blackPath.addAll(this.getPath());
-//		}
-//		System.out.println(blackPath);
-//		System.out.println(blackPieces);
-//		return blackPath;
-//		
-//	}
+
 	public boolean isFresh() {
 		return isFresh;
 	}
 	
 	public void makeOld() {
 		this.isFresh = false;
-	}
-
-	public abstract List<Pair<String, String>> getPath();
-
-	public void moveTo(int x_to, int y_to) {
-		if (!this.isLegalMove(x_to, y_to)) {
-			throw new IllegalStateException("Not a legal move");
-		}
-		if (this.type == 'P' && (y_to == 0 || y_to == this.board.length - 1)) {//check if a pawn is at the edge of the board -> queening
-			board[y_to][x_to] = new Queen(x_to, y_to, this.color, this.board);
-			board[this.y][this.x] = null;
-			board[y_to][x_to].isFresh = true;
-		} else {
-			board[y_to][x_to] = this;
-			board[this.y][this.x] = null;
-			this.x = x_to;
-			this.y = y_to; 			
-			board[y_to][x_to].isFresh = false;
-		}
-		
-		
-//		if (this.board[endY][endX].getType() == 'P' && (endY == 0 || endY == this.board.length - 1)) {
-//			this.board[endY][endX] = new Queen(endX, endY, 0, this.board);
-//		}
-
-	}
-	
-	public boolean isLegalMove(int x_to, int y_to) {
-		List<Pair<String, String>> path = this.getPath();
-		String targetEnd = ""+ x_to + y_to;
-//		String targetStart = "" + this.x + this.y Note: not neded
-		for (Pair<String, String> pair : path) {
-			if (pair.getValue().equals(targetEnd)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public boolean isWhite() {
@@ -130,7 +71,6 @@ public abstract class Piece implements IntPiece{
 		return false;
 	}
 	
-	
 	public int getColor() {
 		return color;
 	}
@@ -139,14 +79,79 @@ public abstract class Piece implements IntPiece{
 		path.clear();
 	}
 
-	public boolean isInBoard(int x, int y) {
-		int max = Math.max(x, y);
-		int min = Math.min(x, y);
-		return max < this.board.length && min >= 0;
+	/**
+	 * Returns the path for <b>this</b>
+	 */
+	public abstract List<Pair<String, String>> getPath();
+	
+	/**
+	 * 
+	 * Moves the piece if it is a legal move
+	 * @param x_to
+	 * @param y_to
+	 */
+	public void moveTo(int x_to, int y_to) {
+		if (!this.isLegalMove(x_to, y_to)) {
+			throw new IllegalStateException("Not a legal move");
+		}
+		if (this.type == 'P' && (y_to == 0 || y_to == this.board.length - 1)) {//check if a pawn is at the edge of the board -> queening
+			board[y_to][x_to] = new Queen(x_to, y_to, this.color, this.board);
+			board[this.y][this.x] = null;
+			board[y_to][x_to].isFresh = true;
+		} else {//
+			board[y_to][x_to] = this;
+			board[this.y][this.x] = null;
+			this.x = x_to;
+			this.y = y_to; 			
+			board[y_to][x_to].isFresh = false;
+		}
+		
+		
+
+	}
+
+	/**
+	 * 
+	 * @param x_to
+	 * @param y_to
+	 * @return
+	 * <b>true</b> if the move from {@code this} to {@code x_to}, {@code y_to} is inside the paths from <b>this</b>
+	 */
+	public boolean isLegalMove(int x_to, int y_to) {
+		List<Pair<String, String>> path = this.getPath();
+		String targetEnd = ""+ x_to + y_to;
+		for (Pair<String, String> pair : path) {
+			if (pair.getValue().equals(targetEnd)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @param x
+	 * @param y
+	 * @return 	 
+	 * Method that returns true if the parameters is true coordinates is inside the board
+	 */
+	public boolean isInBoard(int...ints) {
+		List<Integer> intList = new ArrayList<Integer>(ints.length);
+		for (int i : ints)
+		{
+		    intList.add(i);
+		}
+		
+		int max = Collections.max(intList);
+		int min = Collections.min(intList);
+		return max < board.length && min >= 0;
 	}
 	
 	
-	
+	/**
+	 * {@code toString method for the console}
+	 * @return
+	 * The {@code type} in lower- or upper case, depending on the {@code color}
+	 */
 	public String toString() {
 		if (isWhite()) {
 			return ""+type;

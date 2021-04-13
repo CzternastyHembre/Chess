@@ -3,28 +3,21 @@ package chess;
 //Castle, en pessant, queening, puzzles(?), validating/testing
 
 
-import java.io.FileInputStream;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.*; 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;  
-import java.io.FileInputStream; 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.util.Pair;
-import java.util.concurrent.TimeUnit;
+
+import chess.saveHandler.ChessSaveHandler;
 
 public class GameController {
 	
@@ -47,10 +40,10 @@ public class GameController {
 	
 //	@FXML
 //	Button buttonMove;
-	
-	@FXML
-	ComboBox<String> dropDownPuzzles;
-	
+//	
+//	@FXML
+//	ComboBox<String> dropDownPuzzles;
+//	
 	@FXML
 	TextField saveText;
 
@@ -62,15 +55,18 @@ public class GameController {
 	
 	@FXML
 	private void initialize() {
-		game = new Game(8);
-		game.init8();
+		initialize(8);
+	}
+	
+	private void initialize(int s) {
+		game = new Game(s);
+		game.init(s);
 //		String veryLongGame = "d2d4 g8f6 c2c4 e7e6 g1f3 b7b6 a2a3 c8b7 b1c3 d7d5 c4d5 f6d5 d1c2 d5c3 b2c3 c7c5 e2e4 b8d7 c1f4 c5d4 c3d4 a8c8 c2b3 f8e7 f1d3 d7f6 b3b5 d8d7 f3e5 d7b5 d3b5 e8f8 f2f3 f6e8";
 //		game.movesFromStringLongLAN(veryLongGame);
 
 		
 		createBoard();
 		drawPieces();
-		
 	}
 	
 	private void createBoard() {
@@ -118,24 +114,22 @@ public class GameController {
 			board.getChildren().add(label);
 		}
 	}
-	@FXML
-	public void loadPuzzle() {
-		if (game.getSize() != 8) {
-			feedBackLabel.setText("Unable to load on this type of board"); //TODO
-			return;
-		}
-		String name = dropDownPuzzles.getValue();
-		try {
-			game.loadPuzzle(name);	
-			feedBackLabel.setText("Game load success");
-		} catch (Exception e) {
-			feedBackLabel.setText(e.getMessage());
-		}
-		drawPieces();
-		
-		
-	}
-	
+//	@FXML
+//	public void loadPuzzle() {
+//		if (game.getSize() != 8) {
+//			feedBackLabel.setText("Unable to load on this type of board"); //TODO
+//			return;
+//		}
+//		String name = dropDownPuzzles.getValue();
+//		try {
+//			game.loadPuzzle(name);	
+//			feedBackLabel.setText("Game load success");
+//		} catch (Exception e) {
+//			feedBackLabel.setText(e.getMessage());
+//		}
+//		drawPieces();
+//	}
+//	
 	@FXML
 	public void onEnter() {
 //		List<String> tiles = null;
@@ -157,38 +151,40 @@ public class GameController {
 	}
 	
 	@FXML
-	public void resetGame8() {
-//		if (game.getSize() != 8) {
-//			feedBackLabel.setText("Unable to reset this type of board"); //TODO
-//			return;
-//		}
+	public void resetGame() {
 		try {
-			initialize();
+			initialize(game.getSize());//Resets the game in the current size
 			feedBackLabel.setText("Game reset success");
 			moveLabel.setText(null);
 		} catch (Exception e) {
 			feedBackLabel.setText(e.getMessage());
-			// TODO: handle exception
 		}
-//		game.resetGame8();
 	}
 	
 	@FXML
 	public void loadGame() {
-		if (game.getSize() != 8) {
-			feedBackLabel.setText("Unable to load on this type of board"); //TODO make a initalize with sizes...
-			return;
-		}
-		String name = dropDown.getValue();
+//		if (game.getSize() != 8) {
+//			feedBackLabel.setText("Unable to load on this type of board"); //TODO make a initalize with sizes...
+//			return;
+//		}
+		String dropdownName = dropDown.getValue();
+		String name = dropdownName.substring(6, dropdownName.length());//TODO prefix length
 		try {
+			if (ChessSaveHandler.canGetGame(name)) { //Doesnt reset the game if it doesnt find the game
+				int s = ChessSaveHandler.getGameSize(name);
+				initialize(s);				
+			}
 			game.loadGame(name);
 			
 			//Does the last move here so the movelabel get updated TODO make a method in game to get the movetring....
 			Pair<String, String> lastMove = game.getMoves().get(game.getMoves().size() - 1);
 			game.undoLastMove();
+			game.setGameOver(false);
 			this.moveFromPair(lastMove);
 			
-			feedBackLabel.setText("Game load success");
+			if (feedBackLabel.getText() == null) {
+				feedBackLabel.setText("Game load success");				
+			}
 		} catch (Exception e) {
 			feedBackLabel.setText(e.getMessage());
 		}
@@ -199,10 +195,10 @@ public class GameController {
 	
 	@FXML
 	public void saveGame() {
-		if (game.getSize() != 8) {
-			feedBackLabel.setText("Unable to save this type of board"); //TODO
-			return;
-		}
+//		if (game.getSize() != 8) {
+//			feedBackLabel.setText("Unable to save this type of board"); //TODO
+//			return;
+//		}
 		try {
 			game.saveGame(saveText.getText());
 			feedBackLabel.setText("Game save success");
@@ -211,6 +207,15 @@ public class GameController {
 		} catch (Exception e) {
 			this.feedBackLabel.setText(e.getMessage());
 		}
+	}
+	
+	@FXML
+	public void init8by8() {
+		initialize(8);
+	}
+	@FXML
+	public void init5by5() {
+		initialize(5);		
 	}
 	
 	public void moveFromPair(Pair<String, String> move) {
@@ -274,19 +279,19 @@ public class GameController {
 		}
 		markLastMove();			
 		ObservableList<String> names = FXCollections.observableArrayList();
-		List<String[]> games = game.getGames();
+		List<String[]> games = ChessSaveHandler.getGames();
 		for (String[] game : games) {
-			names.add(game[0]);
+			names.add(game[1]+ "x" + game[1] + " | " + game[0]);
 		}
 		dropDown.setItems(names);
 //		TODO
-		ObservableList<String> namesPuzzle = FXCollections.observableArrayList();
-		List<String[]> gamesPuzzle = game.getPuzzles();
-		for (String[] game : gamesPuzzle) {
-			namesPuzzle.add(game[0]);
-		}
-		dropDownPuzzles.setItems(namesPuzzle);
-
+//		ObservableList<String> namesPuzzle = FXCollections.observableArrayList();
+//		List<String[]> gamesPuzzle = game.getPuzzles();
+//		for (String[] game : gamesPuzzle) {
+//			namesPuzzle.add(game[0]);
+//		}
+//		dropDownPuzzles.setItems(namesPuzzle);
+//
 	}
 	private void markLastMove() {
 		if (game.getMoves().size() == 0) {

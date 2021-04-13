@@ -1,4 +1,4 @@
-package chess;
+package chess.pieces;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class Queen extends Piece{
 
 	@Override
 	public List<Pair<String, String>> getPath() {//	Queen path is just bish + rook
-		List<Pair<String, String>> pathRook = new Rook(this.x, this.y, this.color, this.board).getPath();
-		List<Pair<String, String>> pathBishop = new Bishop(this.x, this.y, this.color, this.board).getPath();
+		List<Pair<String, String>> pathRook = new Rook(x, y, color, board).getPath();
+		List<Pair<String, String>> pathBishop = new Bishop(x, y, color, board).getPath();
 		pathRook.addAll(pathBishop);
 		return pathRook;
 	}

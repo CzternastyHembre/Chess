@@ -1,4 +1,4 @@
-package chess;
+package chess.pieces;
 
 import java.util.List;
 
@@ -20,11 +20,11 @@ public class King extends Piece{
 		this.clearPath();
 		
 		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				int targetX = this.x + j;
+			for (int j = -1; j <= 1; j++) { // For-loop that goes through all the values [y][x] 1 away from 0
+				int targetX = this.x + j; // Centers the value to this
 				int targetY = this.y + i;
 				if (this.isInBoard(targetX, targetY)) {
-					if (i != 0 || j != 0) {
+					if (i != 0 || j != 0) {//If both values are 0 it isn't a legal move
 						if (this.board[targetY][targetX] == null) {
 							Pair<String, String> p = new Pair<>("" + this.x + this.y,"" + targetX + targetY);
 							super.path.add(p);
@@ -36,12 +36,6 @@ public class King extends Piece{
 				}	
 			}
 		}
-//Check castle
-//		for (int i = -1; i <= 1; i++) {
-//			if (!this.isMoved()) {
-//			}
-//		}
-		
 		return path;
 	}
 

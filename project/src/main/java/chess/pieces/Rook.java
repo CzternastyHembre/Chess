@@ -1,4 +1,4 @@
-package chess;
+package chess.pieces;
 
 import java.util.List;
 
@@ -19,35 +19,35 @@ public class Rook extends Piece {
 	public List<Pair<String, String>> getPath() {
 		this.clearPath();
 		
-		for (int i = 0; i < 2; i++) {
-			for (int j = -1; j <= 1; j += 2) {
+		for (int i = 0; i <= 1; i++) {
+			for (int dir = -1; dir <= 1; dir += 2) {
 				int targetX;
 				int targetY;
 				int dx = 1;
 				int dy = 0;
-				if (i == 0) {
-					targetX = this.x + j;
+				if (i == 0) { // first (x--)(y), (x++)(y), (x)(y--), (x)(y++)
+					targetX = this.x + dir;
 					targetY = this.y;
 				} else {		
 					dy = 1;
 					dx = 0;
 					targetX = this.x;
-					targetY = this.y + j;
+					targetY = this.y + dir;
 				}
 				while(this.isInBoard(targetX, targetY)) {
 					if (this.board[targetY][targetX] == null) {
-						Pair<String, String> p = new Pair<>("" + this.x + this.y,"" + targetX + targetY);
+						Pair<String, String> p = new Pair<>("" + x + y,"" + targetX + targetY);
 						super.path.add(p);
 					} else {
 						if (this.board[targetY][targetX].getColor() != this.getColor()) {
-							Pair<String, String> p = new Pair<>("" + this.x + this.y,"" + targetX + targetY);
+							Pair<String, String> p = new Pair<>("" + x + y,"" + targetX + targetY);
 							super.path.add(p);
 						}
 						break;
 					}
 					
-					targetX += j*dx;
-					targetY += j*dy;
+					targetX += dir*dx;
+					targetY += dir*dy;
 				}
 			}	
 		}

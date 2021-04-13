@@ -1,4 +1,4 @@
-package chess;
+package chess.pieces;
 
 import java.util.List;
 
@@ -20,13 +20,16 @@ public class Knight extends Piece {
 	public List<Pair<String, String>> getPath() {
 		this.clearPath();
 		
+//All the directions in the x-axis the horse can move;
 		int[] xDir = {-2, -1, 1, 2};
-		int[] yDir = {1, 2, 2, 1};
 
-		for (int i = 0; i < yDir.length; i++) {
-			for (int j = -1 ; j <= 1; j += 2) {
-				int targetX = this.x + xDir[i];
-				int targetY = this.y + j*yDir[i];
+		for (int dx : xDir) {
+			for (int i = -1; i <= 1; i += 2) {
+				
+				int targetX = this.x + dx;
+				
+				int dy = 3 - Math.abs(dx); // |dy| + |dx| = 3 -> dy = 3 - |dx|;
+				int targetY = this.y + dy * i;
 				
 				if (this.isInBoard(targetX, targetY)) {
 					if (board[targetY][targetX] == null) {
@@ -39,7 +42,6 @@ public class Knight extends Piece {
 				}
 			}
 		}
-//		System.out.println(path);
 		return path;
 	}	
 

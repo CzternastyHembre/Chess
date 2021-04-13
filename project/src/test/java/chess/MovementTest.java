@@ -4,13 +4,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 
+import chess.pieces.Piece;
+
 public class MovementTest{
 	
 	private void checkPos(int x, int y, Piece p, Game game) { // Sjekker om brikken har riktig posisjon og er på brette i samme
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);	
-		System.out.println(game);
+//		System.out.println(game);
 	}
 	
 	public void moveLines(Game game, Piece p) {

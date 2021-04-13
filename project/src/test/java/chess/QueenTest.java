@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import chess.pieces.Piece;
+import chess.pieces.Queen;
+
 public class QueenTest {
 	
 	private Queen queenBlack;
