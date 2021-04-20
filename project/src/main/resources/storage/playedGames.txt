@@ -19,3 +19,4 @@ skolematten;8;e2e4 e7e5 f1c4 g8f6 d1h5 f6e4 h5f7
 snigga;8;e2e4 e7e5 a2a4 d8h4 a4a5 h4e4
 sniggar;8;e2e4 e7e5 d1h5 d8h4 a2a4 e8e7 h5e5
 snigg;8;e2e4 e7e5 d1h5 d8h4 e1e2 h4e4
+testtt;8;f2f3 e7e6 g2g4 d8h4
