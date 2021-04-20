@@ -176,7 +176,7 @@ public class GameController {
 			feedBackLabel.setText(null);
 			int turn = game.getTurn();
 			if (game.isGameOver()) {
-				if (game.checkInChess(turn)) {
+				if (game.checkInChess()) {
 					if (1 - turn == 0){color = "white";}else{color="black";}
 					feedBackLabel.setText("Mate " + color + " won");
 				} else {
@@ -253,7 +253,7 @@ public class GameController {
 			feedBackLabel.setText("No game set to load");
 			return;
 		}
-		String name = dropdownName.substring(6, dropdownName.length());//TODO prefix length
+		String name = dropdownName.substring(6, dropdownName.length());//the 6 first characters isn't a part of the name e.i. "8x8 | "
 		try {
 			if (ChessSaveHandler.canGetGame(name)) { //Doesn't reset the game if it doesn't find the game
 				int s = ChessSaveHandler.getGameSize(name);
@@ -262,7 +262,7 @@ public class GameController {
 			game.loadGame(name);
 			moveLabel.setText(game.getMoveString());
 			
-			feedBackLabel.setText("Game load success");				
+			feedBackLabel.setText("Game load success");//This can overwrite messages like mate though		
 		} catch (Exception e) {
 			feedBackLabel.setText(e.getMessage());
 		}

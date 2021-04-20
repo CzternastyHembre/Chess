@@ -25,7 +25,7 @@ public class TestChesses {
 		String moveString = "e2e4 e7e5 d1h5 e8e7 a2a4 b8c6 h5e5";
 		
 		game.movesFromStringLongLAN(moveString);
-		Assertions.assertTrue(game.checkInChess(game.getTurn()));
+		Assertions.assertTrue(game.checkInChess());
 		Assertions.assertFalse(game.checkMate());
 	}
 	
@@ -34,7 +34,7 @@ public class TestChesses {
 		String moveString = "e2e4 e7e5 b1c3 d8h4 e1e2 h4e4";
 		
 		game.movesFromStringLongLAN(moveString);
-		Assertions.assertTrue(game.checkInChess(game.getTurn()));
+		Assertions.assertTrue(game.checkInChess());
 		Assertions.assertFalse(game.checkMate());
 	}
 	
@@ -44,7 +44,7 @@ public class TestChesses {
 		String moveString = "e2e4 e7e5 a2a4 d8h4 a4a5 h4e4";
 		
 		game.movesFromStringLongLAN(moveString);
-		Assertions.assertTrue(game.checkInChess(game.getTurn()));
+		Assertions.assertTrue(game.checkInChess());
 		Assertions.assertFalse(game.checkMate());
 	}
 
@@ -54,7 +54,7 @@ public class TestChesses {
 		String moveString = "e2e4 e7e5 d1h5 a7a5 h5e5";
 		
 		game.movesFromStringLongLAN(moveString);
-		Assertions.assertTrue(game.checkInChess(game.getTurn()));
+		Assertions.assertTrue(game.checkInChess());
 		Assertions.assertFalse(game.checkMate());
 	}
 	
@@ -64,7 +64,7 @@ public class TestChesses {
 		String moveString = "e2e4 e7e5 d1h5 d8h4 a2a4 e8e7 h5e5";
 		
 		game.movesFromStringLongLAN(moveString);
-		Assertions.assertTrue(game.checkInChess(game.getTurn()));
+		Assertions.assertTrue(game.checkInChess());
 		Assertions.assertFalse(game.checkMate());
 	}
 
@@ -73,7 +73,7 @@ public class TestChesses {
 		String moveString = "e2e4 e7e5 d1h5 d8h4 e1e2 h4e4";
 		
 		game.movesFromStringLongLAN(moveString);
-		Assertions.assertTrue(game.checkInChess(game.getTurn()));
+		Assertions.assertTrue(game.checkInChess());
 		Assertions.assertFalse(game.checkMate());
 	}
 

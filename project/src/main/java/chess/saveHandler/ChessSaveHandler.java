@@ -41,8 +41,8 @@ public class ChessSaveHandler implements SaveHandler {
 		return null;
 	}
 	
-	
-	public static String[] getGame(String name) {
+	@Override
+	public String[] getGame(String name) {
 		if (name == null) {
 			throw new IllegalStateException("No game set to load");			
 		}
@@ -56,13 +56,15 @@ public class ChessSaveHandler implements SaveHandler {
 	}
 
 	public static int getGameSize(String name) {
-		String[] gameString = ChessSaveHandler.getGame(name);
+		SaveHandler ch = new ChessSaveHandler();
+		String[] gameString = ch.getGame(name);
 		int size = Integer.parseInt(gameString[1]);
 		return size;
 	}
 
 	public static boolean canGetGame(String name) {
-		return ChessSaveHandler.getGame(name) != null;
+		SaveHandler ch = new ChessSaveHandler();
+		return ch.getGame(name) != null;
 	}
 
 }

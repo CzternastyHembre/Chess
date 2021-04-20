@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 import javafx.util.Pair;
 
 /**
@@ -42,20 +43,16 @@ public class Game {
 		this(8);
 	}
 	
-	public void setGameOver(boolean isGameOver) {
+	private void setGameOver(boolean isGameOver) {
 		this.isGameOver = isGameOver;
 	}
 	
 	public boolean isGameOver() {
 		return this.isGameOver;
 	}
-
-	public List<Piece> getTakenPieces() {
-		return takenPieces;
-	}
 	
 	public List<Pair<String, String>> getMoves() {
-		return moves;
+		return new ArrayList<>(moves);
 	}
 	
 	public int getTurn() {
@@ -172,7 +169,7 @@ public class Game {
 	 * @return
 	 */
 	public boolean isInsideBoard(int...ints) {
-		List<Integer> intList = new ArrayList<Integer>(ints.length);
+		List<Integer> intList = new ArrayList<Integer>();
 		for (int i : ints)
 		{
 		    intList.add(i);
@@ -218,7 +215,7 @@ public class Game {
 	 * @return
 	 * All the paths for the {@code color}
 	 */
-	public List<Pair<String, String>> getAllPaths(int color) {
+	private List<Pair<String, String>> getAllPaths(int color) {
 		this.paths.clear();
 		for (int i = 0; i < this.getSize(); i++) {
 			for (int j = 0; j < this.getSize(); j++) {
@@ -239,7 +236,7 @@ public class Game {
 	 * @return
 	 * The king for the {@code color}
 	 */
-	public Piece getKing(int color) {
+	private Piece getKing(int color) {
 		if (kingList.size() > 0) {
 			return kingList.get(color);			
 		} else {
@@ -253,7 +250,7 @@ public class Game {
 				}			
 			}
 		}
-		if (kingList.get(0).getColor() == 1) { // Assumes there is only one king per color, and arranges the kings based on color (0, white, 1 Black)
+		if (kingList.get(0).getColor() == 1) { // Assumes there is only one king per color, and two colors, and arranges the kings based on color (0, white, 1 Black)
 			Collections.reverse(kingList);
 		}
 		return kingList.get(color);
@@ -264,7 +261,7 @@ public class Game {
 	 * @return
 	 * True if any of the opposite moves can take your king
 	 */
-	public boolean checkInChess(int turn) {
+	private boolean checkInChess(int turn) {
 		Piece king = this.getKing(turn);
 		List<Pair<String, String>> allOpositePaths = this.getAllPaths(1 - turn);
 		
@@ -274,6 +271,10 @@ public class Game {
 			}
 		}
 		return false;
+	}
+	
+	public boolean checkInChess() {
+		return checkInChess(getTurn());
 	}
 	
 	/**
@@ -295,6 +296,7 @@ public class Game {
 				this.undoLastMove();				
 			}
 		}
+		setGameOver(mate);
 		return mate;
 	}
 	
@@ -329,9 +331,7 @@ public class Game {
 		}
 
 		this.moveFromPair(move);
-		if (this.checkMate()) {
-			this.isGameOver = true;
-		} else {
+		if (!this.checkMate()) {
 			if (this.checkInChess(1- this.getTurn())) {
 				this.undoLastMove();
 				throw new IllegalStateException("You are in chess");
@@ -376,9 +376,9 @@ public class Game {
 	}
 	
 	public String getMoveString() {
-		Pair<String, String> lastMove = this.getMoves().get(this.getMoves().size() - 1);
+		Pair<String, String> lastMove = moves.get(moves.size() - 1);
 		String moveLAN = this.convertPairToLAN(lastMove);
-		int moveNr = (int) (getMoves().size() + 1) / 2;
+		int moveNr = (int) (moves.size() + 1) / 2;
 		String moveString = moveNr + ". " + moveLAN.substring(0, 2) + "-" + moveLAN.substring(2,4);	
 		if (isGameOver) {
 			moveString += "#";
@@ -498,17 +498,17 @@ public class Game {
 		if (name.isBlank()) {
 			throw new IllegalStateException("No name set to save");						
 		}
-		if (this.getMoves().isEmpty()) {
+		if (moves.isEmpty()) {
 			throw new IllegalStateException("No pieces moved");						
 		}
 		
-		if (ChessSaveHandler.getGame(name) != null) {
+		SaveHandler ch = new ChessSaveHandler();
+		if (ch.getGame(name) != null) {
 			throw new IllegalStateException("Game name already taken");			
 		}
 		
-		String moveString = this.convertMovesToString(this.getMoves());
+		String moveString = this.convertMovesToString(moves);
 		
-		SaveHandler ch = new ChessSaveHandler();
 		ch.save(name + ";" + getSize() + ";" + moveString);
 	}
 	
@@ -517,7 +517,8 @@ public class Game {
 	 * @param name
 	 */
 	public void loadGame(String name) {
-		String[] gameString = ChessSaveHandler.getGame(name);
+		SaveHandler ch = new ChessSaveHandler();
+		String[] gameString = ch.getGame(name);
 		String moveString = gameString[gameString.length - 1];
 		this.movesFromStringLongLAN(moveString);
 	}
@@ -694,7 +695,7 @@ public class Game {
 //		System.out.println(b);
 //		b.saveGame("OiL");
 //		System.out.println(b.getGames().size());
-//		List<Pair<String, String>> stringm = b.getMoves();
+//		List<Pair<String, String>> stringm = b.moves;
 //		System.out.println(b.convertMovesToString(stringm));
 //		System.out.println(b.convertMovesToString(stringm).equals(veryLongGame));
 //		b.saveToFile("TESTgame;" + veryLongGame);
