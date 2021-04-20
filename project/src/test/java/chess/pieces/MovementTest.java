@@ -1,89 +1,101 @@
-package chess;
+package chess.pieces;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
 
-import chess.pieces.Piece;
+import chess.Game;
 
 public class MovementTest{
 	
-	private void checkPos(int x, int y, Piece p, Game game) { // Sjekker om brikken har riktig posisjon og er på brette i samme
+	private static void checkPos(int x, int y, Piece p, Game game) { // Sjekker om brikken har riktig posisjon og er på brette i samme
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);	
-//		System.out.println(game);
+		System.out.println(game);
 	}
 	
-	public void moveLines(Game game, Piece p) {
+	public static void moveLines(Game game, Piece p) {
 		int s = game.getSize();
 		
 		int x = p.getX();
 		int y = p.getY();	
 		
 		for (int i = y + 1; i < s; i++) {//Move down (y++)
-			p.moveTo(x, i);
+			int j = i;
+			Assertions.assertDoesNotThrow(() -> p.moveTo(x, j));
+//			p.moveTo(x, i);
 			checkPos(x, i, p, game);
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 		
 		for (int i = y - 1; i > 0; i--) {//Move up (y--)
-			p.moveTo(x, i);
+			int j = i;
+			Assertions.assertDoesNotThrow(() -> p.moveTo(x, j));
+//			p.moveTo(x, i);
 			checkPos(x, i, p, game);
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 
 		for (int i = x + 1; i < s; i++) {//Move right (x++)
-			p.moveTo(i, y);
+			int j = i;
+			Assertions.assertDoesNotThrow(() -> p.moveTo(j, y));
+//			p.moveTo(i, y);
 			checkPos(i, y, p, game);
 		}
 
 		for (int i = x - 1; i > 0; i--) {//Move left (x--)
-			p.moveTo(i, y);
+			int j = i;
+			Assertions.assertDoesNotThrow(() -> p.moveTo(j, y));
+//			p.moveTo(i, y);
 			checkPos(i, y, p, game);
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 	}
 	
-	public void moveDiagonal(Game game, Piece p) {
+	public static void moveDiagonal(Game game, Piece p) {
 		int s = game.getSize();
 		
 		int x = p.getX();
 		int y = p.getY();	
 		
 		for (int i = 1; i + Math.max(x, y) < s; i++) {// x++ y++
-			p.moveTo(x + i, y + i);
+			int x_to = x + i;
+			int y_to = y + i;
+			Assertions.assertDoesNotThrow(() -> p.moveTo(x_to, y_to));
+//			p.moveTo(x + i, y + i);
 			checkPos(x + i, y + i, p, game);
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 		
 		for (int i = 1; Math.min(x, y) - i >= 0 ; i++) {// x-- y--
-			p.moveTo(x - i, y - i);
+			int x_to = x - i;
+			int y_to = y - i;
+			Assertions.assertDoesNotThrow(() -> p.moveTo(x_to, y_to));
+//			p.moveTo(x - i, y - i);
 			checkPos(x - i, y - i, p, game);			
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 
 		for (int i = 1; y + i < s && x - i >= 0 ; i++) {// x-- y++
 			p.moveTo(x - i, y + i);
 			checkPos(x - i, y + i, p, game);			
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 		
 		for (int i = 1; x + i < s && y - i >= 0  ; i++) {// x++ y--
 			p.moveTo(x + i, y - i);
 			checkPos(x + i, y - i, p, game);
 		}
-		this.moveBack(x, y, p);		
+		MovementTest.moveBack(x, y, p);		
 	}
 	
-	private void moveBack(int x_to, int y_to, Piece p) {//Function that moves the piece back if it is not already there
+	private static void moveBack(int x_to, int y_to, Piece p) {//Function that moves the piece back if it is not already there
 		if (x_to == p.getX() && y_to == p.getY()) {
 			return;
 		}
 		p.moveTo(x_to, y_to);
 	}
 
-	public void moveIllegalLines(Game game, Piece p) {
+	public static void moveIllegalLines(Game game, Piece p) {
 		int s = game.getSize();
 		
 		int x = p.getX();
@@ -110,7 +122,7 @@ public class MovementTest{
 		}
 	}
 
-	public void moveIllegalDiagonal(Game game, Piece p) {
+	public static void moveIllegalDiagonal(Game game, Piece p) {
 		int s = game.getSize();
 		
 		int x = p.getX();
@@ -121,28 +133,28 @@ public class MovementTest{
 			int y_to = y + i;
 			Assertions.assertThrows(IllegalStateException.class, () -> p.moveTo(x_to, y_to));
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 		
 		for (int i = 1; Math.min(x, y) - i >= 0 ; i++) {// x-- y--
 			int x_to = x - i;
 			int y_to = y - i;
 			Assertions.assertThrows(IllegalStateException.class, () -> p.moveTo(x_to, y_to));
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 
 		for (int i = 1; y + i < s && x - i >= 0 ; i++) {// x-- y++
 			int x_to = x - i;
 			int y_to = y + i;
 			Assertions.assertThrows(IllegalStateException.class, () -> p.moveTo(x_to, y_to));
 		}
-		this.moveBack(x, y, p);
+		MovementTest.moveBack(x, y, p);
 		
 		for (int i = 1; x + i < s && y - i >= 0  ; i++) {// x++ y--
 			int x_to = x + i;
 			int y_to = y - i;
 			Assertions.assertThrows(IllegalStateException.class, () -> p.moveTo(x_to, y_to));
 		}
-		this.moveBack(x, y, p);		
+		MovementTest.moveBack(x, y, p);		
 	}
 
 }

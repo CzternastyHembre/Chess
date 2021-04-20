@@ -1,11 +1,10 @@
-package chess;
+package chess.pieces;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import chess.pieces.King;
-import chess.pieces.Piece;
+import chess.Game;
 
 public class KingTest {
 	
@@ -18,6 +17,7 @@ public class KingTest {
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);	
+//		System.out.println(game);
 	}
 	
 	@BeforeEach
@@ -72,7 +72,6 @@ public class KingTest {
 				if (Math.max(Math.abs(x_pos - x_to), Math.abs(y_pos - y_to)) > 1) { //Checks if the distance is > 1
 					int x = x_to;
 					int y = y_to;
-					System.out.println(x + " " + y + "|" + x_pos + " " + y_pos);
 					Assertions.assertThrows(IllegalStateException.class, () -> p.moveTo(x, y));
 				}
 			}

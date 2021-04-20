@@ -2,7 +2,7 @@ package play2048;
 
 public class Tile {
 	private int value;
-	private static final String[] colors = {
+	private static final String[] COLORS = {
 			"A9D7A9", // -> 2
 			"49D1BA", // -> 4
 			"FA9A52", // -> 8
@@ -44,8 +44,8 @@ public class Tile {
 	}
 	
 	public String getColor() {
-		int i = colorIndex % colors.length;
-		return colors[i];
+		int i = colorIndex % COLORS.length;
+		return COLORS[i];
 	}
 	
 	public int getLength() {

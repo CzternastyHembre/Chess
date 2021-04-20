@@ -1,11 +1,10 @@
-package chess;
+package chess.pieces;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import chess.pieces.Knight;
-import chess.pieces.Piece;
+import chess.Game;
 
 public class KnightTest {
 	
@@ -18,7 +17,7 @@ public class KnightTest {
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);
-		System.out.println(game);
+//		System.out.println(game);
 	}
 	
 	@BeforeEach

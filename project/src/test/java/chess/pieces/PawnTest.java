@@ -1,12 +1,10 @@
-package chess;
+package chess.pieces;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import chess.pieces.Pawn;
-import chess.pieces.Piece;
-import chess.pieces.Queen;
+import chess.Game;
 
 
 public class PawnTest {

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Scanner;
 
 
-public class ChessSaveHandler {
+public class ChessSaveHandler implements SaveHandler {
 
-	public static final String SAVE_FILE = "src/main/resources/storage/playedGames.txt";
 
-	public static void Save(String saveString) {
+	@Override
+	public void save(String saveString) {
 		try {
 	        FileWriter fileWriter = new FileWriter(SAVE_FILE, true); //Set true for append mode
 	        PrintWriter writer = new PrintWriter(fileWriter);
@@ -22,7 +22,7 @@ public class ChessSaveHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}			
 	
 	public static List<String[]> getGames() {
 		List<String[]> games = new ArrayList<>();
@@ -41,6 +41,7 @@ public class ChessSaveHandler {
 		return null;
 	}
 	
+	
 	public static String[] getGame(String name) {
 		if (name == null) {
 			throw new IllegalStateException("No game set to load");			
@@ -51,7 +52,7 @@ public class ChessSaveHandler {
 				return game;
 			}
 		}
-		throw new IllegalArgumentException("No game with this name");
+		return null;
 	}
 
 	public static int getGameSize(String name) {
@@ -63,5 +64,5 @@ public class ChessSaveHandler {
 	public static boolean canGetGame(String name) {
 		return ChessSaveHandler.getGame(name) != null;
 	}
-		
+
 }

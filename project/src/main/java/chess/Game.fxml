@@ -34,7 +34,7 @@
                      <font>
                         <Font size="16.0" />
                      </font></Label>
-                  <TextField fx:id="textField" layoutX="14.0" layoutY="37.0" onAction="#onEnter" prefHeight="25.0" prefWidth="62.0" promptText="Move">
+                  <TextField fx:id="textField" layoutX="14.0" layoutY="37.0" onAction="#onEnterMove" prefHeight="25.0" prefWidth="62.0" promptText="Move">
                      <font>
                         <Font size="16.0" />
                      </font></TextField>

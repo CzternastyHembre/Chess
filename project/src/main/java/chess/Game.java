@@ -8,13 +8,21 @@ import chess.pieces.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import chess.saveHandler.ChessSaveHandler;
+import chess.saveHandler.SaveHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.util.Pair;
 
+/**
+ * @author Mattis Czternasty Hembre
+ * @Todo_next_time
+ *Make own class for Move and Moves
+ */
 public class Game {
+	
 	private Piece[][] board;
 	private int size;
 	private List<Pair<String, String>> paths = new ArrayList<Pair<String, String>>();
@@ -23,6 +31,16 @@ public class Game {
 	private List<Piece> takenPieces = new ArrayList<>();
 	private List<Pair<String, String>> posibleMoves = new ArrayList<>();
 	private boolean isGameOver = false;
+	private List<Piece> kingList = new ArrayList<>();
+	
+	public Game(int size) {
+		this.board = new Piece[size][size];
+		this.size = size;
+	}
+	
+	public Game() {
+		this(8);
+	}
 	
 	public void setGameOver(boolean isGameOver) {
 		this.isGameOver = isGameOver;
@@ -32,11 +50,6 @@ public class Game {
 		return this.isGameOver;
 	}
 
-	public Game(int size) {
-		this.board = new Piece[size][size];
-		this.size = size;
-	}
-	
 	public List<Piece> getTakenPieces() {
 		return takenPieces;
 	}
@@ -46,26 +59,29 @@ public class Game {
 	}
 	
 	public int getTurn() {
-		return turn;
+		return turn % 2;
 	}
 	
 	public void nextTurn() {
-		if (this.turn == 0) {
-			this.turn = 1;
-		} else {
-			this.turn = 0;
-		}
+		turn++;
 	}
 	
 	public void prevTurn() {
-		this.nextTurn();
+		turn--;
 	}
 	
 	public int getSize() {
 		return size;
 	}
+	
+	/**
+	 * Initiates the board
+	 * @param i the size of the board
+	 * @throws 
+	 * if there isn't a board ready for the size
+	 */
 	public void init(int i) {
-		
+
 		switch (i) {
 		case 8:
 			init8();
@@ -77,97 +93,131 @@ public class Game {
 			throw new IllegalArgumentException("Unexpected value: " + i);
 		}
 	}
-	public void init8() {//init pieces in 8x8
+	
+	/**
+	 * Initiates the pieces for a 8x8 board
+	 */
+	public void init8() {
 		
-		//init Pawns
+		//Initiate Pawns
 		for (int i = 0; i < board.length; i++) {
 			board[1][i] = new Pawn(i, 1, 1, this.board);//Black
 			board[board.length-2][i] = new Pawn(i, board.length-2, 0, this.board);//White
 		}
-		//init Knights
+		//Initiate Knights
 		board[0][1] = new Knight(1, 0, 1, this.board);//Black
 		board[0][6] = new Knight(6, 0, 1, this.board);//Black
 		board[7][1] = new Knight(1, 7, 0, this.board);//White
 		board[7][6] = new Knight(6, 7, 0, this.board);//White
 		
-		//init Bish
+		//Initiate Bish
 		board[0][2] = new Bishop(2, 0, 1, this.board);//Black
 		board[0][5] = new Bishop(5, 0, 1, this.board);//Black
 		board[7][2] = new Bishop(2, 7, 0, this.board);//White
 		board[7][5] = new Bishop(5, 7, 0, this.board);//White
 		
-		//init Rook
+		//Initiate Rook
 		board[0][0] = new Rook(0, 0, 1, this.board);//Black
 		board[0][7] = new Rook(7, 0, 1, this.board);//Black
 		board[7][0] = new Rook(0, 7, 0, this.board);//White
 		board[7][7] = new Rook(7, 7, 0, this.board);//White
 		
-		//init Queen
+		//Initiate Queen
 		board[0][3] = new Queen(3, 0, 1, this.board);//Black
 		board[7][3] = new Queen(3, 7, 0, this.board);//White
 		
-		//init King
+		//InitiateKing
 		board[0][4] = new King(4, 0, 1, this.board);//Black
 		board[7][4] = new King(4, 7, 0, this.board);//White
 	}
 	
+	/**
+	 * Initiates the pieces for a 5x5 board
+	 */	
 	public void init5() {
 		
-		//init Pawns
+		//Initiate Pawns
 		for (int i = 0; i < board.length; i++) {
 			board[1][i] = new Pawn(i, 1, 1, this.board);//Black
 			board[board.length-2][i] = new Pawn(i, board.length-2, 0, this.board);//White
 		}
-		//init Knights
-		board[0][1] = new Knight(1, 0, 1, this.board);//Black
+		//Initiate Knights
 		board[0][6-3] = new Knight(6-3, 0, 1, this.board);//Black
-		board[7-3][1] = new Knight(1, 7-3, 0, this.board);//White
 		board[7-3][6-3] = new Knight(6-3, 7-3, 0, this.board);//White
 		
-		//init Bish
+		//Initiate Bish
+		board[0][6-4] = new Bishop(6-4, 0, 1, this.board);//Black
+		board[7-3][6-4] = new Bishop(6-4, 7-3, 0, this.board);//White
 		
-		//init Rook
-		board[0][0] = new Rook(0, 0, 1, this.board);//Black
+		//Initiate Rook
 		board[0][7-3] = new Rook(7-3, 0, 1, this.board);//Black
-		board[7-3][0] = new Rook(0, 7-3, 0, this.board);//White
 		board[7-3][7-3] = new Rook(7-3, 7-3, 0, this.board);//White
 		
-		//init Queen
+		//Initiate Queen
+		board[0][6-5] = new Queen(6-5, 0, 1, this.board);//Black
+		board[7-3][6-5] = new Queen(6-5, 7-3, 0, this.board);//White
 		
-		//init King
-		board[0][2] = new King(2, 0, 1, this.board);//Black
-		board[7-3][2] = new King(2, 7-3, 0, this.board);//White
+		//Initiate King
+		board[0][0] = new King(0, 0, 1, this.board);//Black
+		board[7-3][0] = new King(0, 7-3, 0, this.board);//White
 	}
 	
 	public Piece[][] getBoard() {
 		return board;
 	}
 	
-	public boolean isInsideBoard(int x, int y) {
-		int maxSize = Math.max(x, y);
-		int minSize = Math.min(x, y);
-		return maxSize < this.size && minSize >= 0;
+	/**
+	 * Checks if the integers is within the size of the board
+	 * @param ints
+	 * @return
+	 */
+	public boolean isInsideBoard(int...ints) {
+		List<Integer> intList = new ArrayList<Integer>(ints.length);
+		for (int i : ints)
+		{
+		    intList.add(i);
+		}
+		
+		int max = Collections.max(intList);
+		int min = Collections.min(intList);
+		return max < this.getSize() && min >= 0;
 	}
 	
 	public Piece getPiece(int x, int y) {
 		return board[y][x];
 	}
 	
-	public Pair<String, String> getPopMove() {
+	/**
+	 * Removes the last move
+	 * @return
+	 * The last move, or null if no pieces
+	 */
+	private Pair<String, String> popMove() {
 		if (moves.size() > 0) {
 			Pair<String, String> lastMove = moves.remove(moves.size() - 1);
 			return lastMove;
 		}
 		return null;
 	}
-
-	public Piece popLastPiece() {
+	
+	/**
+	 * Removes the last piece
+	 * @return
+	 * The last piece, or null if no pieces
+	 */
+	private Piece popPiece() {
 		if (this.takenPieces.size() > 0) {
 			return takenPieces.remove(takenPieces.size() - 1);
 		}
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param color
+	 * @return
+	 * All the paths for the {@code color}
+	 */
 	public List<Pair<String, String>> getAllPaths(int color) {
 		this.paths.clear();
 		for (int i = 0; i < this.getSize(); i++) {
@@ -183,19 +233,37 @@ public class Game {
 		return paths;
 	}
 	
+	/**
+	 * Fetches the kings one time an adds it in an array and next time doesn't need to search for it
+	 * @param color
+	 * @return
+	 * The king for the {@code color}
+	 */
 	public Piece getKing(int color) {
-		for (int i = 0; i < this.getSize(); i++) {
-			for (int j = 0; j < this.getSize(); j++) {
-				if (this.board[i][j] != null) {
-					if (board[i][j].getType() == 'K' && board[i][j].getColor() == color) {
-						return board[i][j];
+		if (kingList.size() > 0) {
+			return kingList.get(color);			
+		} else {
+			for (int i = 0; i < this.getSize(); i++) {
+				for (int j = 0; j < this.getSize(); j++) {
+					if (this.board[i][j] != null) {
+						if (board[i][j].getType() == 'K') {
+							kingList.add(board[i][j]);
+						}
 					}
-				}
+				}			
 			}
 		}
-		return null;
+		if (kingList.get(0).getColor() == 1) { // Assumes there is only one king per color, and arranges the kings based on color (0, white, 1 Black)
+			Collections.reverse(kingList);
+		}
+		return kingList.get(color);
 	}
 	
+	/**
+	 * @param turn
+	 * @return
+	 * True if any of the opposite moves can take your king
+	 */
 	public boolean checkInChess(int turn) {
 		Piece king = this.getKing(turn);
 		List<Pair<String, String>> allOpositePaths = this.getAllPaths(1 - turn);
@@ -208,34 +276,78 @@ public class Game {
 		return false;
 	}
 	
+	/**
+	 * Method that iterates though all possible moves and checks if you are in chess, if you are in chess after every move you can make -> checkMate
+	 * @return
+	 * True if you have no legal moves to do, i.e. either staleMate or checkMate
+	 */
 	public boolean checkMate() {
-		List<Pair<String, String>> allTurnPaths = new ArrayList<>(this.getAllPaths(turn));
+		List<Pair<String, String>> allTurnPaths = new ArrayList<>(this.getAllPaths(this.getTurn()));
 		boolean mate = true;
 		this.posibleMoves.clear();
 		for (Pair<String, String> pair : allTurnPaths) {
 			this.moveFromPair(pair);
-			if (!checkInChess(1 - turn)) {//Getting the opposite move because movefrom pair runs nextmove
+			if (!checkInChess(1 - this.getTurn())) {//Getting the opposite move because move from pair runs the next move
 				this.posibleMoves.add(pair);
 				mate = false;
 				this.undoLastMove();
-//				return false; 
-//				return false if you dont want all possible moves, but faster runtime
 			} else {
 				this.undoLastMove();				
 			}
 		}
-//		System.out.println(posibleMoves);
 		return mate;
 	}
 	
+	/**
+	 * Adds the pieces to the takePieces List
+	 * @param piece
+	 */
 	public void addPiece(Piece piece) {
 		this.takenPieces.add(piece);
 	}
+	
+	private void moveFromPair(Pair<String, String> move) {
+		//The base moving method
+		int startX = Integer.parseInt(move.getKey().charAt(0) + "");
+		int startY = Integer.parseInt(move.getKey().charAt(1) + "");
+		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
+		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
+		
+		if (this.board[startY][startX].getColor() != this.getTurn()) {
+			throw new IllegalStateException("Wrong color to move");
+		}
+		this.addPiece(this.board[endY][endX]);
+		this.board[startY][startX].moveTo(endX, endY);
+		this.nextTurn();
+		moves.add(move);
+		
+	}
+	
+	public void movePiece(Pair<String, String> move) {
+		if (isGameOver) {
+			throw new IllegalStateException("Game is over");
+		}
 
-	public void undoLastMove() {
+		this.moveFromPair(move);
+		if (this.checkMate()) {
+			this.isGameOver = true;
+		} else {
+			if (this.checkInChess(1- this.getTurn())) {
+				this.undoLastMove();
+				throw new IllegalStateException("You are in chess");
+			}
+		}
+
+	}
+
+
+	/**
+	 * Undoes the last move and takes the turn back
+	 */
+	private void undoLastMove() {
 		//Getting the last move and last piece
-		Pair<String, String> lastMove = this.getPopMove();
-		Piece lastPiece = this.popLastPiece();
+		Pair<String, String> lastMove = this.popMove();
+		Piece lastPiece = this.popPiece();
 
 		if (lastMove == null) {
 			throw new IllegalStateException("Can't undo in this state");
@@ -256,11 +368,25 @@ public class Game {
 			board[startY][startX] = lastPiece;
 			board[endY][endX].setX(endX);
 			board[endY][endX].setY(endY);			
-		} else {
+		} else {//If the piece is "fresh", it was a pawn
 			Piece p = new Pawn(endX, endY, board[startY][startX].getColor(), this.board);
 			board[endY][endX] = p;
 			board[startY][startX] = lastPiece;
 		}
+	}
+	
+	public String getMoveString() {
+		Pair<String, String> lastMove = this.getMoves().get(this.getMoves().size() - 1);
+		String moveLAN = this.convertPairToLAN(lastMove);
+		int moveNr = (int) (getMoves().size() + 1) / 2;
+		String moveString = moveNr + ". " + moveLAN.substring(0, 2) + "-" + moveLAN.substring(2,4);	
+		if (isGameOver) {
+			moveString += "#";
+		} else if (checkInChess(getTurn())) {
+			moveString += "+";
+		}
+		return moveString;
+	
 	}
 	
 	public void moveFromStringLAN(String LAN) {
@@ -320,26 +446,17 @@ public class Game {
 		int endY = this.size - Integer.parseInt("" + endNumber);
 		
 		if (!this.isInsideBoard(startX, startY) || !this.isInsideBoard(endX, endY)) {
-			throw new IllegalStateException("Move is not inside the board");
+			throw new IllegalArgumentException("Move is not inside the board");
 		}
 		if (this.board[startY][startX] == null) {
-			throw new IllegalArgumentException("No piece at " + LAN.substring(0,2));							
+			throw new IllegalStateException("No piece at " + LAN.substring(0,2));							
 		}
 
 		Pair<String, String> pairMove = new Pair<>("" + startX + startY, "" + endX + endY);
 		return pairMove;
 	}
-	
-	public List<String> getLANArr() {
-		List<Pair<String, String>> moves = this.posibleMoves;
-		List<String> allLANArr = new ArrayList<>();
-		for (Pair<String, String> pair : moves) {
-			allLANArr.add(this.convertPairToLAN(pair));
-		}
-		return allLANArr;
-	}
 
-	public String convertPairToLAN(Pair<String, String> move) {
+	private String convertPairToLAN(Pair<String, String> move) {
 		String letters = "abcdefgh";
 
 		int istartX = Integer.parseInt(move.getKey().charAt(0) + "");
@@ -355,55 +472,59 @@ public class Game {
 
 	}
 	
-	public void moveFromPair(Pair<String, String> move) {
-		//The base moving method
-		int startX = Integer.parseInt(move.getKey().charAt(0) + "");
-		int startY = Integer.parseInt(move.getKey().charAt(1) + "");
-		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
-		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
-		
-		if (this.board[startY][startX].getColor() != this.getTurn()) {
-			throw new IllegalArgumentException("Wrong color to move");
-		}
-		this.addPiece(this.board[endY][endX]);
-		this.board[startY][startX].moveTo(endX, endY);
-		this.nextTurn();
-		moves.add(move);
-		
-	}
-	
-	public void movePiece(Pair<String, String> move) {
-		if (isGameOver) {
-			throw new IllegalStateException("Game is over");
-		}
-
-		this.moveFromPair(move);
-//		int endX = Integer.parseInt(move.getValue().charAt(0) + "");
-//		int endY = Integer.parseInt(move.getValue().charAt(1) + "");
-
-		if (this.checkMate()) {
-			this.isGameOver = true;
-//			if (checkInChess(turn)) {
-//				System.out.println("Checkmate; " + (1-turn) + " Won");				
-//			} else {
-//				System.out.println("Stalemate LOL");
-//			}
-		} else {
-			if (this.checkInChess(1- turn)) {
-				this.undoLastMove();
-				throw new IllegalStateException("You are in chess");
-			}
-		}
-
-	}
-	
 	public void movesFromStringLongLAN(String moves) {
 		String[] moveList = moves.split(" ");
 		for (int i = 0; i < moveList.length; i++) {
 			moveFromStringLAN(moveList[i]);
 		}
 	}
+		
+	private String convertMovesToString(List<Pair<String, String>> moves) {
+		String stringMoves = "";
+		for (Pair<String, String> move : moves) {
+			stringMoves += this.convertPairToLAN(move) + " ";
+		}
+		return stringMoves.substring(0, stringMoves.length() - 1); // Removing the last ch (" ");
+	}
 	
+	/**
+	 * Saves the game if it meets all the requirements to save
+	 * @param name
+	 */
+	public void saveGame(String name) {
+		if (name == null) {
+			throw new IllegalStateException("No name set to save");			
+		}
+		if (name.isBlank()) {
+			throw new IllegalStateException("No name set to save");						
+		}
+		if (this.getMoves().isEmpty()) {
+			throw new IllegalStateException("No pieces moved");						
+		}
+		
+		if (ChessSaveHandler.getGame(name) != null) {
+			throw new IllegalStateException("Game name already taken");			
+		}
+		
+		String moveString = this.convertMovesToString(this.getMoves());
+		
+		SaveHandler ch = new ChessSaveHandler();
+		ch.save(name + ";" + getSize() + ";" + moveString);
+	}
+	
+	/**
+	 * <b>requires</b> the game to be at the right size and starting position
+	 * @param name
+	 */
+	public void loadGame(String name) {
+		String[] gameString = ChessSaveHandler.getGame(name);
+		String moveString = gameString[gameString.length - 1];
+		this.movesFromStringLongLAN(moveString);
+	}
+
+	/**
+	 * <b>Stockfish</b> style string of the board
+	 */
 	@Override
 	public String toString() {
 		String boardString = "";
@@ -427,128 +548,15 @@ public class Game {
 			
 		return boardString;
 	}
-	
-//	public void saveToFileString(String s) {
-//	    try {
-//	        FileWriter fileWriter = new FileWriter("src/main/resources/storage/playedGames.txt", true); //Set true for append mode
-//	        PrintWriter printWriter = new PrintWriter(fileWriter);
-//	        printWriter.println(s);  //New line
-//	        printWriter.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
-	
-	public String convertMovesToString(List<Pair<String, String>> moves) {
-		String stringMoves = "";
-		for (Pair<String, String> move : moves) {
-			stringMoves += this.convertPairToLAN(move) + " ";
-		}
-		return stringMoves.substring(0, stringMoves.length() - 1); // Removing the last ch;
-	}
-	
-	public void saveGame(String name) {
-		if (name == null) {
-			throw new IllegalStateException("No name set to save");			
-		}
-		if (name.isBlank()) {
-			throw new IllegalStateException("No name set to save");						
-		}
-		if (this.getMoves().isEmpty()) {
-			throw new IllegalStateException("No pieces moved");						
-		}
-		
-		List<String[]> games = ChessSaveHandler.getGames();
-		for (String[] game : games) {
-			if (game[0].equals(name)) {
-				throw new IllegalStateException("Game name already taken");
-			}
-		}
-		String saveString = this.convertMovesToString(this.getMoves());
-		ChessSaveHandler.Save(name + ";" + getSize() + ";" + saveString);
-		
-//		this.saveToFileString(name + ";" + saveString);
-	}
 
-//	public String getGame(String name) {
-//		if (name == null) {
-//			throw new IllegalStateException("No game set to load");			
-//		}
-//		List<String[]> games = ChessSaveHandler.getGames();
-//		for (String[] game : games) {
-//			if (game[0].equals(name)) {
-//				return game[1];
-//			}
-//		}
-//		throw new IllegalArgumentException("No game with this name");
-//	}
-	
-	
-	public void loadGame(String name) {
-		
-		String[] gameString = ChessSaveHandler.getGame(name);
-//		int gameSize = this.getSize();
-//		this.resetGame8();
-		String moveString = gameString[gameString.length - 1];
-		this.movesFromStringLongLAN(moveString);
-	}
-	
-//	public void loadPuzzle(String name) {
-//		String gameString = this.getPuzzle(name);
-////		int gameSize = this.getSize();
-////		this.resetGame8();
-//		this.movesFromStringLongLAN(gameString);
-//	}
-	
-	
-//	public void resetGame8() {
-//		//reseting all states, idk how to create a new game
-//		this.board = new Piece[this.getSize()][this.getSize()];
-//		this.paths = new ArrayList<Pair<String, String>>();
-//		this.turn = 0;
-//		this.moves = new ArrayList<>();
-//		this.takenPieces = new ArrayList<>();
-//		this.posibleMoves = new ArrayList<>();
-//		this.isGameOver = false;
-//		this.init8();
-//	}
-	
-//	public List<String[]> getPuzzles() {
-//		List<String[]> games = new ArrayList<>();
-//		try {
-//			File file = new File("src/main/resources/storage/puzzles.txt");
-//		    Scanner sc = new Scanner(file);
-//		    while (sc.hasNextLine()) {
-//		    	String[] game = sc.nextLine().split(";");
-//		    	games.add(game);
-//		    } 
-//		    return games;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-	
-//	public String getPuzzle(String name) {
-//		if (name == null) {
-//			throw new IllegalStateException("No game set to load");			
-//		}
-//		List<String[]> puzzle = this.getPuzzles();
-//		for (String[] game : puzzle) {
-//			if (game[0].equals(name)) {
-//				return game[1];
-//			}
-//		}
-//		throw new IllegalArgumentException("No game with this name");
-//	}
-
-
-	
 	public static void main(String[] args) {
 		Game b = new Game(8);
 		b.init8();
 		System.out.println(b);	
+		b.getKing(0);
+		System.out.println(b.kingList.size());
+//		b.getPiece(4, 6).moveTo(4, 4);
+//		System.out.println(b);	
 		
 //		b.loadGame("TESTgame");
 		

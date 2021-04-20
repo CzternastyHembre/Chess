@@ -1,18 +1,15 @@
-package chess;
+package chess.pieces;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import chess.pieces.Piece;
-import chess.pieces.Rook;
+import chess.Game;
 
 public class RookTest {
 	
 	private Rook rookBlack;
 	private Rook rookWhite;
 	private Game game;
-	private final MovementTest m = new MovementTest();
 		
 	@BeforeEach
 	public void beforeEach() {
@@ -25,14 +22,14 @@ public class RookTest {
 	
 	@Test
 	public void testMoveRooks() {
-		m.moveLines(game, rookBlack);
-		m.moveLines(game, rookWhite);
+		MovementTest.moveLines(game, rookBlack);
+		MovementTest.moveLines(game, rookWhite);
 	}
 	
 	@Test
 	public void testIllegalMoves() {
-		m.moveIllegalDiagonal(game, rookBlack);
-		m.moveIllegalDiagonal(game, rookWhite);
+		MovementTest.moveIllegalDiagonal(game, rookBlack);
+		MovementTest.moveIllegalDiagonal(game, rookWhite);
 	}
 	
 }

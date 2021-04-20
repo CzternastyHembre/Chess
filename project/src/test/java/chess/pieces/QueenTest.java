@@ -1,25 +1,23 @@
-package chess;
+package chess.pieces;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import chess.pieces.Piece;
-import chess.pieces.Queen;
+import chess.Game;
 
 public class QueenTest {
 	
 	private Queen queenBlack;
 	private Queen queenWhite;
 	private Game game;
-	private final MovementTest m = new MovementTest();
 
 	
 	private void checkPos(int x, int y, Piece p) { // Sjekker om brikken har riktig posisjon og er på brette i samme
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);
-		System.out.println(game);
+//		System.out.println(game);
 	}
 	
 	@BeforeEach
@@ -33,11 +31,11 @@ public class QueenTest {
 	
 	@Test
 	public void testMoveQueen() {
-		m.moveDiagonal(game, queenBlack);
-		m.moveDiagonal(game, queenWhite);
+		MovementTest.moveDiagonal(game, queenBlack);
+		MovementTest.moveDiagonal(game, queenWhite);
 		
-		m.moveLines(game, queenBlack);
-		m.moveLines(game, queenWhite);
+		MovementTest.moveLines(game, queenBlack);
+		MovementTest.moveLines(game, queenWhite);
 	}
 	
 
