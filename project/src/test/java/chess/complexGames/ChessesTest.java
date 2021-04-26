@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the different ways to get out of chess
  */
-public class TestChesses {
+public class ChessesTest {
 
 	Game game;
 	

@@ -17,7 +17,6 @@ public class QueenTest {
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);
-//		System.out.println(game);
 	}
 	
 	@BeforeEach

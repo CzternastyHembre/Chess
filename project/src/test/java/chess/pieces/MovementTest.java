@@ -10,7 +10,6 @@ public class MovementTest{
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);	
-//		System.out.println(game);
 	}
 	
 	public static void moveLines(Game game, Piece p) {

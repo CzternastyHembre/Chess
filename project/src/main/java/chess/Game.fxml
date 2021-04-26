@@ -44,9 +44,7 @@
                   <Button layoutX="195.0" layoutY="62.0" mnemonicParsing="false" onAction="#loadGame" text="Load game" />
                   <TextField fx:id="saveText" layoutX="336.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Game name" />
                   <Button layoutX="416.0" layoutY="62.0" mnemonicParsing="false" onAction="#saveGame" text="Save game" />
-<!--                   <ComboBox fx:id="dropDownPuzzles" layoutX="115.0" layoutY="31.0" prefHeight="25.0" prefWidth="80.0" promptText="Difficulties" />
-                  <Button layoutX="195.0" layoutY="31.0" mnemonicParsing="false" onAction="#loadPuzzle" text="Load puzzle" />
- -->               </children>
+               </children>
             </Pane>
             <Pane fx:id="board" />
          </children>
