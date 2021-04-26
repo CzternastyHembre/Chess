@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-
 public class Game {
 	private Tile[][] board;
 	private int heigth;
