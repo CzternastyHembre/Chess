@@ -2,13 +2,10 @@ package play2048;
 
 
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent; 
 
