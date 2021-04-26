@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import javafx.util.Pair;
+
 
 public class Game {
 	private Tile[][] board;
@@ -74,6 +79,7 @@ public class Game {
 	}
 	
 	public void flipBoard() {
+		
 		Tile[][] colrow = new Tile[width][heigth];
 		this.heigth = colrow.length;
 		this.width = colrow[0].length;
@@ -86,9 +92,10 @@ public class Game {
 	}
 	
 	public void sortY(Comparator<Tile> comparator) {
-		flipBoard();
-		sortX(comparator);
-		flipBoard();
+
+	    flipBoard();
+	    sortX(comparator);
+	    flipBoard();
 	}
 	public void sortUp() {
 		sortY(new TileComparator().reversed());		
@@ -197,6 +204,7 @@ public class Game {
 	}
 
 	public void addTile() {
+		
 		List<Integer> emptyIndexes = new ArrayList<>();
 		for (int y = 0; y < heigth; y++) {
 			for (int x = 0; x < width; x++) {

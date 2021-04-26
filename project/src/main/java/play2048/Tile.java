@@ -1,7 +1,7 @@
 package play2048;
 
 public class Tile {
-	private int value;
+	private long value;
 	private static final String[] COLORS = {
 			"A9D7A9", // -> 2
 			"49D1BA", // -> 4
@@ -34,7 +34,7 @@ public class Tile {
 		colorIndex = n - 1;
 	}
 	
-	public int getValue() {
+	public long getValue() {
 		return value;
 	}
 	
@@ -49,7 +49,7 @@ public class Tile {
 	}
 	
 	public int getLength() {
-		return Integer.toString(value).length();
+		return Integer.toString((int)value).length();
 	}
 	
 	@Override

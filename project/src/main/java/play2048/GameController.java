@@ -2,10 +2,13 @@ package play2048;
 
 
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent; 
 
@@ -21,7 +24,7 @@ public class GameController{
 	
 	@FXML
 	private void initialize() {
-		game = new Game(4,4);
+		game = new Game(3,4);
 //		game.getBoard()[0][0] = new Tile(1);
 //		for (int y = 0; y < game.getHeigth(); y++) {
 //			for (int x = 0; x < game.getWidth(); x++) {
@@ -102,6 +105,7 @@ public class GameController{
 		Label scoreLabel = (Label) board.getChildren().get(board.getChildren().size()-1);
 		scoreLabel.setText("SCORE: " + game.getScore());
 	}
+//	int i;
 
     @FXML  // <== perhaps you had this missing??
     public void keyPressed(KeyEvent event) {
@@ -120,7 +124,37 @@ public class GameController{
     			game.moveDown();
     			break;
     		case R:
-    			initialize();    			
+    			initialize();  
+    			break;
+//    		case F:
+//    			i = 0;
+//    			Timeline m = new Timeline(new KeyFrame(Duration.seconds(0.3), ev -> {
+//    				
+//    				switch (i) {
+//    				case 0:
+//    					drawTiles();
+//    					game.flipBoard();
+//    					drawTiles();
+//    					break;
+//    				case 1:
+//    					drawTiles();
+//    					game.sortX(new TileComparator());
+//    					drawTiles();
+//    					break;
+//    				case 2:
+//    					drawTiles();
+//    					game.flipBoard();
+//    					drawTiles();
+//    					break;
+//    				default:
+//    					throw new IllegalArgumentException("Unexpected value: " + i);
+//    				}
+//    				i++;
+//    			} 
+//    			));
+//    			m.setCycleCount(3);
+//    		    m.play();
+//    			break;
     		default:
     			break;
     		}
@@ -137,10 +171,5 @@ public class GameController{
 			System.out.println(e.getMessage());
 		}
     }
-
-
-	
-
-
 }
 
