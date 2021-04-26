@@ -10,7 +10,6 @@ public class MovementTest{
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
 		Assertions.assertEquals(game.getPiece(x, y), p);	
-//		System.out.println(game);
 	}
 	
 	public static void moveLines(Game game, Piece p) {
@@ -38,14 +37,12 @@ public class MovementTest{
 		for (int i = x + 1; i < s; i++) {//Move right (x++)
 			int j = i;
 			Assertions.assertDoesNotThrow(() -> p.moveTo(j, y));
-//			p.moveTo(i, y);
 			checkPos(i, y, p, game);
 		}
 
 		for (int i = x - 1; i > 0; i--) {//Move left (x--)
 			int j = i;
 			Assertions.assertDoesNotThrow(() -> p.moveTo(j, y));
-//			p.moveTo(i, y);
 			checkPos(i, y, p, game);
 		}
 		MovementTest.moveBack(x, y, p);
@@ -61,7 +58,6 @@ public class MovementTest{
 			int x_to = x + i;
 			int y_to = y + i;
 			Assertions.assertDoesNotThrow(() -> p.moveTo(x_to, y_to));
-//			p.moveTo(x + i, y + i);
 			checkPos(x + i, y + i, p, game);
 		}
 		MovementTest.moveBack(x, y, p);
@@ -70,7 +66,6 @@ public class MovementTest{
 			int x_to = x - i;
 			int y_to = y - i;
 			Assertions.assertDoesNotThrow(() -> p.moveTo(x_to, y_to));
-//			p.moveTo(x - i, y - i);
 			checkPos(x - i, y - i, p, game);			
 		}
 		MovementTest.moveBack(x, y, p);
