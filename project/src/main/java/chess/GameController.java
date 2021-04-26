@@ -1,8 +1,8 @@
 package chess;
-//TODO
-//Castle, en pessant, queening, puzzles(?), validating/testing
 
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,43 +12,49 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.control.*; 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;  
+import javafx.scene.image.ImageView;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import chess.saveHandler.ChessSaveHandler;
+import chess.saveHandler.SaveHandler;
 
 public class GameController {
 	
 	private Game game;
-	
-	@FXML
-	Pane board;
-	
-	@FXML
-	Pane controlPane;
-	
-	@FXML
-	Label feedBackLabel;
-	
-	@FXML
-	AnchorPane anchorPane;
-	
-	@FXML
-	TextField textField;
-	
-	@FXML
-	TextField saveText;
+	private int i;
+	private Timeline myTimeLine;
 
 	@FXML
-	ComboBox<String> dropDown;
-	
-	@FXML 
-	Label moveLabel;
+	private Pane board;
 	
 	@FXML
-	public void initialize() {
+	private Pane controlPane;
+	
+	@FXML
+	private Label feedBackLabel;
+	
+	@FXML
+	private AnchorPane anchorPane;
+	
+	@FXML
+	private TextField textField;
+	
+	@FXML
+	private TextField saveText;
+
+	@FXML
+	private ComboBox<String> dropDown;
+	
+	@FXML 
+	private Label moveLabel;
+	
+	@FXML
+	private void initialize() {
 		initialize(8);
 	}
 	
@@ -60,12 +66,12 @@ public class GameController {
 	}
 	
 	@FXML
-	public void init8by8() {
+	private void init8by8() {
 		initgame(8);
 	}
 	
 	@FXML
-	public void init5by5() {
+	private void init5by5() {
 		initgame(5);
 	}
 	
@@ -75,7 +81,7 @@ public class GameController {
 	}
 
 	@FXML
-	public void resetGame() {
+	private void resetGame() {
 		resetGame(game.getSize());//Resets the game in the current size
 	}
 	
@@ -172,15 +178,18 @@ public class GameController {
 	private void moveFromPair(Pair<String, String> move) {
 		try {
 			game.movePiece(move);
-			String color;
+	
 			feedBackLabel.setText(null);
 			int turn = game.getTurn();
 			if (game.isGameOver()) {
+				String result;
 				if (game.checkInChess()) {
-					if (1 - turn == 0){color = "white";}else{color="black";}
-					feedBackLabel.setText("Mate " + color + " won");
+					String color = 1 - turn == 0 ? "white" :"black";
+					result = 1 - turn == 0 ? "1-0" : "0-1";
+					feedBackLabel.setText("Mate " + color + " won " + result);
 				} else {
-					feedBackLabel.setText("Draw, It's a stalemate");
+					result = "1/2 - 1/2";
+					feedBackLabel.setText("Draw, It's a stalemate " + result);
 				}	
 			}
 			drawPieces();
@@ -191,9 +200,24 @@ public class GameController {
 	}
 	
 	@FXML
-	public void onEnterMove() {
+	private void onEnterMove() {
+		String stringLAN = textField.getText();
+		if (stringLAN.length() == 2) {//If you put in two coordinates it will draw the pooible moves that piece has
+			try {
+				List<Pair<String, String>> possibleTiles = game.getPosPathsLAN(stringLAN);
+				if (possibleTiles.size() > 0) {
+					drawPieces();
+					markTiles(possibleTiles);
+					textField.setText(null);
+					feedBackLabel.setText(null);
+					return;								
+				}
+			} catch (Exception e) {
+				feedBackLabel.setText(e.getMessage());
+				return;
+			}
+		} 
 		try {
-			String stringLAN = textField.getText();
 			Pair<String, String> move = game.convertLANtoPair(stringLAN);
 			moveFromPair(move);
 			textField.setText(null);
@@ -247,30 +271,71 @@ public class GameController {
 	}
 
 	@FXML
-	public void loadGame() {
+	private void loadGame() {
 		String dropdownName = dropDown.getValue();
 		if (dropdownName == null) {
 			feedBackLabel.setText("No game set to load");
 			return;
 		}
-		String name = dropdownName.substring(6, dropdownName.length());//the 6 first characters isn't a part of the name e.i. "8x8 | "
-		try {
-			if (ChessSaveHandler.canGetGame(name)) { //Doesn't reset the game if it doesn't find the game
-				int s = ChessSaveHandler.getGameSize(name);
-				initialize(s);				
+		String name = dropdownName.substring(dropdownName.indexOf('|') + 2, dropdownName.length());//the first characters isn't a part of the name e.i. "8x8 | "
+		
+		SaveHandler ch = new ChessSaveHandler();
+		if (ch.canGetGame(name)) { //Doesn't reset the game if it doesn't find the game
+			int s = ChessSaveHandler.getGameSize(name);
+			initialize(s);	
+			if (myTimeLine != null) {
+				myTimeLine.stop();				
 			}
-			game.loadGame(name);
-			moveLabel.setText(game.getMoveString());
+		}
+		try {
 			
-			feedBackLabel.setText("Game load success");//This can overwrite messages like mate though		
+			/**
+			 * Use these 4 lines instead to load without the animation
+			 */
+//			game.loadGame(name);
+//			moveLabel.setText(game.getMoveString());
+//			feedBackLabel.setText("Game load success");//This doesn't overwrite messages like mate though						
+//			drawPieces();
+			
+			/**
+			 * Loading the games with animation
+			 */
+			String[] gameString = ch.getGame(name);
+			String[] moves = gameString[gameString.length - 1].split(" ");
+			int l = moves.length;
+			i = 0;
+			
+			myTimeLine = new Timeline(new KeyFrame(Duration.seconds(0.15), ev -> {
+				try {
+					Pair<String, String> pp = game.convertLANtoPair(moves[i]);
+					this.moveFromPair(pp);
+//					game.moveFromStringLAN(moves[i]);
+					moveLabel.setText(game.getMoveString());
+					i += 1;					
+					
+					if (l == i) {						
+						if (feedBackLabel.getText() == null) {
+							feedBackLabel.setText("Game load success");//This doesn't overwrite messages like mate though						
+						}
+					}
+				} catch (Exception e) {
+					feedBackLabel.setText(null);
+					myTimeLine.stop();
+				}
+			} 
+			));
+			myTimeLine.setCycleCount(l);
+		    myTimeLine.play();
+		    		    
+			
 		} catch (Exception e) {
 			feedBackLabel.setText(e.getMessage());
 		}
-		drawPieces();
 	}
+
 	
 	@FXML
-	public void saveGame() {
+	private void saveGame() {
 		try {
 			game.saveGame(saveText.getText());
 			feedBackLabel.setText("Game save success");

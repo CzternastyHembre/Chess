@@ -46,6 +46,7 @@ public class TestInputs {
 	@Test
 	public void testMovesOutsideOfBoard() {
 		
+		
 		//Outside of the board
 		Assertions.assertThrows(IllegalArgumentException.class, () -> game.moveFromStringLAN("a0a1"));
 		Assertions.assertThrows(IllegalArgumentException.class, () -> game.moveFromStringLAN("a7a9"));
@@ -75,6 +76,21 @@ public class TestInputs {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> game.moveFromStringLAN("8e7"));		
 		Assertions.assertThrows(IllegalArgumentException.class, () -> game.moveFromStringLAN("e7"));		
 		Assertions.assertThrows(IllegalArgumentException.class, () -> game.moveFromStringLAN("7"));		
+	}
+	
+	@Test
+	public void testIsInsideBoard() {
+		Assertions.assertTrue(game.isInsideBoard(0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7));
+		Assertions.assertFalse(game.isInsideBoard(-1,0,1,2,3,4,5,6,7));
+		Assertions.assertFalse(game.isInsideBoard(0,1,2,3,4,5,6,7,8));
+	}
+	
+	@Test
+	public void testIsInsideBoard5x5() {
+		game = new Game(5);
+		Assertions.assertTrue(game.isInsideBoard(0,1,2,3,4,0,1,2,3,4));
+		Assertions.assertFalse(game.isInsideBoard(-1,0,1,2,3,4));
+		Assertions.assertFalse(game.isInsideBoard(0,1,2,3,4,5));
 	}
 
 }

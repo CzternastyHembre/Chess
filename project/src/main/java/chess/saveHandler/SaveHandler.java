@@ -7,4 +7,5 @@ public interface SaveHandler {
 
 	void save(String saveString);
 	String[] getGame(String name);
+	boolean canGetGame(String name);
 }

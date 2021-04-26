@@ -78,9 +78,7 @@ public class GameController{
     public void keyPressed(KeyEvent event) {
     	try {
     		switch (event.getCode()) {
-    		case LEFT, A:
-    			game.moveLeft();
-    			break;
+    		case LEFT, A: game.moveLeft(); break;
     		case RIGHT, D:
     			game.moveRight();
     			break;

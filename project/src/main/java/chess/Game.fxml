@@ -24,23 +24,22 @@
          <children>
             <Pane fx:id="controlPane" prefHeight="100.0" GridPane.rowIndex="1">
                <children>
-                  <Label layoutX="14.0" layoutY="14.0" text="Move:" />
-                  <Label fx:id="moveLabel" layoutX="54.0" layoutY="3.0" prefHeight="31.0" prefWidth="101.0">
+                  <Label fx:id="moveLabel" layoutX="14.0" layoutY="13.0" prefHeight="31.0" prefWidth="80.0">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Label fx:id="feedBackLabel" layoutX="155.0" layoutY="3.0" prefHeight="31.0" prefWidth="276.0">
+                  <Label fx:id="feedBackLabel" layoutX="115.0" layoutY="6.0" prefHeight="52.0" prefWidth="253.0" wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font></Label>
-                  <TextField fx:id="textField" layoutX="14.0" layoutY="37.0" onAction="#onEnterMove" prefHeight="25.0" prefWidth="62.0" promptText="Move">
+                  <Button layoutX="376.0" layoutY="16.0" mnemonicParsing="false" onAction="#init8by8" text="8x8" />
+                  <Button layoutX="410.0" layoutY="16.0" mnemonicParsing="false" onAction="#init5by5" text="5x5" />
+                  <Button layoutX="444.0" layoutY="16.0" mnemonicParsing="false" onAction="#resetGame" text="Reset" />
+                  <TextField fx:id="textField" layoutX="14.0" layoutY="44.0" onAction="#onEnterMove" prefHeight="25.0" prefWidth="62.0" promptText="Move">
                      <font>
                         <Font size="16.0" />
                      </font></TextField>
-                  <Button layoutX="376.0" layoutY="18.0" mnemonicParsing="false" onAction="#init8by8" text="8x8" />
-                  <Button layoutX="410.0" layoutY="18.0" mnemonicParsing="false" onAction="#init5by5" text="5x5" />
-                  <Button layoutX="445.0" layoutY="18.0" mnemonicParsing="false" onAction="#resetGame" text="Reset" />
                   <ComboBox fx:id="dropDown" layoutX="115.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Games" />
                   <Button layoutX="195.0" layoutY="62.0" mnemonicParsing="false" onAction="#loadGame" text="Load game" />
                   <TextField fx:id="saveText" layoutX="336.0" layoutY="62.0" prefHeight="25.0" prefWidth="80.0" promptText="Game name" />

@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
+/**
+ * Would have preferred to have all the methods static, but the project requires to have an interface
+ */
 public class ChessSaveHandler implements SaveHandler {
 
 
@@ -44,7 +46,10 @@ public class ChessSaveHandler implements SaveHandler {
 	@Override
 	public String[] getGame(String name) {
 		if (name == null) {
-			throw new IllegalStateException("No game set to load");			
+			throw new IllegalArgumentException("No game set to load");			
+		}
+		if (name.isBlank()) {
+			throw new IllegalArgumentException("No game set to load");
 		}
 		List<String[]> games = ChessSaveHandler.getGames();
 		for (String[] game : games) {
@@ -62,7 +67,8 @@ public class ChessSaveHandler implements SaveHandler {
 		return size;
 	}
 
-	public static boolean canGetGame(String name) {
+	@Override
+	public boolean canGetGame(String name) {
 		SaveHandler ch = new ChessSaveHandler();
 		return ch.getGame(name) != null;
 	}

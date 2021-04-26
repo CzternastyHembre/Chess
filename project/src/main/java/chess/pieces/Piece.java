@@ -10,7 +10,7 @@ import javafx.util.Pair;
 public abstract class Piece implements IntPiece{
 	
 	/**
-	 * is "<b>fresh</b>" if the piece has newly <i>queened</i>
+	 * is "<b>fresh</b>" if the piece has newly <i>"queened"</i>
 	 */
 	private boolean isFresh = true;
 	protected int x;
@@ -140,13 +140,14 @@ public abstract class Piece implements IntPiece{
 		{
 		    intList.add(i);
 		}
+		Math.signum(1);
 		
 		int max = Collections.max(intList);
 		int min = Collections.min(intList);
 		return max < board.length && min >= 0;
 	}
 	
-	
+
 	/**
 	 * {@code toString method for the console}
 	 * @return

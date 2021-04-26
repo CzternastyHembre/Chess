@@ -1,4 +1,4 @@
-package chess.complexGames;
+package chess.saveHandler;
 
 import java.util.List;
 
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import chess.Game;
 import chess.pieces.Piece;
 import chess.pieces.Pawn;
-import chess.saveHandler.ChessSaveHandler;
 import javafx.util.Pair;
 
 public class PlayedGamesTest {

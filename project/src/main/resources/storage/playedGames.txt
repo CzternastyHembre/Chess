@@ -1,4 +1,3 @@
-test;5;c2c3
 Long game;8;d2d4 g8f6 c2c4 e7e6 g1f3 b7b6 a2a3 c8b7 b1c3 d7d5 c4d5 f6d5 d1c2 d5c3 b2c3 c7c5 e2e4 b8d7 c1f4 c5d4 c3d4 a8c8 c2b3 f8e7 f1d3 d7f6 b3b5 d8d7 f3e5 d7b5 d3b5 e8f8 f2f3 f6e8
 Quick mate;8;f2f3 e7e6 g2g4 d8h4
 Knights out and in;8;g1f3 g8f6 f3g1 f6g8
@@ -11,12 +10,9 @@ Marting;8;e2e4 e7e5 d1h5 b8c6
 quickmate TODO undomove movestring...;8;f2f3 e7e6 g2g4 d8h4 
 long game;5;c2c3 b4c3 d1c3 d5c3 b2b3 c3e2 e1e2
 Long mate;5;c2c3 b4c3 b1e4 b5b2 c1b2 c3c2 b2c3 a5b5 e4d5 e5e2 d5c5 b5c5 d2d3 c2c1
-dripjgrepoig;8;g2g3
-seokfops;5;d1c3
-ohh;8;e2e4
 blackInChess;8;e2e4 e7e5 d1h5 b8c6 h5f7
 skolematten;8;e2e4 e7e5 f1c4 g8f6 d1h5 f6e4 h5f7
-snigga;8;e2e4 e7e5 a2a4 d8h4 a4a5 h4e4
-sniggar;8;e2e4 e7e5 d1h5 d8h4 a2a4 e8e7 h5e5
-snigg;8;e2e4 e7e5 d1h5 d8h4 e1e2 h4e4
-testtt;8;f2f3 e7e6 g2g4 d8h4
+stalemate;5;b2b3 a4b3 a2b3 c4b3 b1b3 b5e2 b3d5 e2e1 d5e5 e1d1 e5e4 d1d2 e4d4 d2c2 d4c5 c2c5 a1b1 c5c1 b1a2 c1c2 a2a1 b4b3
+noe|noeno1|;8;d2d4
+den jeg knuste jørgen;5;b2b3 a4b3 a2b3 c4b3 b1b3 b5e2 b3d5 e2e1 d5e5 e1d1 e5e4 d1d2 e4d4 d2c2 d4c5 c2c5 a1b1 c5c1 b1a2 c1c2 a2a1 b4b3
+egiL;8;d2d4 e7e5 e2e4 d8h4 f1c4 f8e7 d1f3 e7d8 f3f7
