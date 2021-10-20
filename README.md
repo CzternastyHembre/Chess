@@ -4,4 +4,4 @@ Java, JavaFX and JUnit5.
 
 Java object oriented programing, the prjocet being:
 
-* [chess](TDT4100/README.md)
+* [chess](TDT4100/tree/main/project/src/main/java/chess)
