@@ -71,6 +71,8 @@ public class ChessSaveHandler implements SaveHandler {
 	public boolean canGetGame(String name) {
 		SaveHandler ch = new ChessSaveHandler();
 		return ch.getGame(name) != null;
+		
+
 	}
 
 }

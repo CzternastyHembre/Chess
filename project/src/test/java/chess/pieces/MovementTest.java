@@ -9,7 +9,7 @@ public class MovementTest{
 	private static void checkPos(int x, int y, Piece p, Game game) { // Sjekker om brikken har riktig posisjon og er på brette i samme
 		Assertions.assertEquals(x, p.getX());
 		Assertions.assertEquals(y, p.getY());
-		Assertions.assertEquals(game.getPiece(x, y), p);	
+		Assertions.assertEquals(game.getPiece(x, y), p);
 	}
 	
 	public static void moveLines(Game game, Piece p) {

@@ -1,4 +1,4 @@
-package play2048;
+package gameOfLife;
 
 
 
@@ -86,90 +86,77 @@ public class GameController{
 				Pane tile = (Pane) board.getChildren().get(y * game.getWidth() + x);
 				tile.getChildren().clear();
 				String style = "-fx-border-color: grey; -fx-border-width: 10px;";
-				if (game.getBoard()[y][x] != null) {
-					Label text = new Label("" + game.getBoard()[y][x].getValue());
-					int l = game.getBoard()[y][x].getLength();
-					text.setFont(new Font(80 - l*10));
-					text.setTranslateX(30/l);
-					text.setTranslateY(-5 + l*5);
-					tile.getChildren().add(text);
-					if (game.getBoard()[y][x].getValue() > 64) {
-						text.setStyle("-fx-text-fill: #f9f6f2;");						
-					}
-	
-					style += "-fx-background-color: #" + game.getBoard()[y][x].getColor() + ";";
-				}
 				tile.setStyle(style);
 			}
 		}
-		Label scoreLabel = (Label) board.getChildren().get(board.getChildren().size()-1);
-		scoreLabel.setText("SCORE: " + game.getScore());
+//		Label scoreLabel = (Label) board.getChildren().get(board.getChildren().size()-1);
+//		scoreLabel.setText("SCORE: " + game.getScore());
 	}
 	int i;
 
     @FXML  // <== perhaps you had this missing??
     public void keyPressed(KeyEvent event) {
-    	try {
-    		switch (event.getCode()) {
-    		case LEFT, A:
-    			game.moveLeft();
-    			break;
-    		case RIGHT, D:
-    			game.moveRight();
-    			break;
-    		case UP, W:
-    			game.moveUp();
-    			break;
-    		case DOWN, S:
-    			game.moveDown();
-    			break;
-    		case R:
-    			initialize();  
-    			break;
-    		case F:
-    			i = 0;
-    			Timeline m = new Timeline(new KeyFrame(Duration.seconds(0.3), ev -> {
-    				
-    				switch (i) {
-    				case 0:
-    					drawTiles();
-    					game.flipBoard();
-    					drawTiles();
-    					break;
-    				case 1:
-    					drawTiles();
-    					game.sortX(new TileComparator());
-    					drawTiles();
-    					break;
-    				case 2:
-    					drawTiles();
-    					game.flipBoard();
-    					drawTiles();
-    					break;
-    				default:
-    					throw new IllegalArgumentException("Unexpected value: " + i);
-    				}
-    				i++;
-    			} 
-    			));
-    			m.setCycleCount(3);
-    		    m.play();
-    			break;
-    		default:
-    			break;
-    		}
-    		drawTiles();
-    		switch (event.getCode()) {
-    		case K:
-    			Label scoreLabel = (Label) board.getChildren().get(board.getChildren().size()-1);
-    			scoreLabel.setText("KARAN ER XXXXX-HOMO");
-    			break;
-    		default:
-    			break;
-			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+//    	try {
+//    		switch (event.getCode()) {
+//    		case LEFT, A:
+//    			game.moveLeft();
+//    			break;
+//    		case RIGHT, D:
+//    			game.moveRight();
+//    			break;
+//    		case UP, W:
+//    			game.moveUp();
+//    			break;
+//    		case DOWN, S:
+//    			game.moveDown();
+//    			break;
+//    		case R:
+//    			initialize();  
+//    			break;
+//    		case F:
+//    			i = 0;
+//    			Timeline m = new Timeline(new KeyFrame(Duration.seconds(0.3), ev -> {
+//    				
+//    				switch (i) {
+//    				case 0:
+//    					drawTiles();
+//    					game.flipBoard();
+//    					drawTiles();
+//    					break;
+//    				case 1:
+//    					drawTiles();
+//    					game.sortX(new TileComparator());
+//    					drawTiles();
+//    					break;
+//    				case 2:
+//    					drawTiles();
+//    					game.flipBoard();
+//    					drawTiles();
+//    					break;
+//    				default:
+//    					throw new IllegalArgumentException("Unexpected value: " + i);
+//    				}
+//    				i++;
+//    			} 
+//    			));
+//    			m.setCycleCount(3);
+//    		    m.play();
+//    			break;
+//    		default:
+//    			break;
+//    		}
+//    		drawTiles();
+//    		switch (event.getCode()) {
+//    		case K:
+//    			Label scoreLabel = (Label) board.getChildren().get(board.getChildren().size()-1);
+//    			scoreLabel.setText("KARAN ER XXXXX-HOMO");
+//    			break;
+//    		default:
+//    			break;
+//			}
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//		}
     }
 }
 

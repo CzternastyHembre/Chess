@@ -2,6 +2,8 @@ package play2048;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -239,15 +241,27 @@ public class Game {
 	}
 	
 	public static void main(String[] args) {
-		Game g = new Game(4, 4);
-		System.out.println(g);
-		for (int i = 0; i < 50; i++) {
-			g.moveDown();
-			System.out.println(g);
-			g.moveRight();
-			System.out.println(g);
-		}
-		System.out.println(g.score);
+//		Game g = new Game(4, 4);
+//		System.out.println(g);
+//		for (int i = 0; i < 50; i++) {
+//			g.moveDown();
+//			System.out.println(g);
+//			g.moveRight();
+//			System.out.println(g);
+//		}
+//		System.out.println(g.score);
+//		
+//		
+		
+		String b = "skogergay";
+		
+		Collection<String> a = new ArrayList<>();
+		a.add(b);
+		
+		a.add(b);
+		
+		
+		System.out.println(a);
 		
 	}
 }

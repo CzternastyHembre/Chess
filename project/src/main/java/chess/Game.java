@@ -569,4 +569,10 @@ public class Game {
 			
 		return boardString;
 	}
+	
+	public static void main(String[] args) {
+		Game g = new Game(8);
+		g.init(8);
+		System.out.println(g);
+	}
 }
